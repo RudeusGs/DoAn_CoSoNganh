@@ -2,3 +2,6 @@
 DragonAcc.Service/obj
 DragonAcc/.vs
 DragonAcc/obj
+DragonAcc/bin
+DragonAcc.Infrastructure/bin
+DragonAcc.Service/bin
