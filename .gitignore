@@ -5,3 +5,7 @@ DragonAcc/obj
 DragonAcc/bin
 DragonAcc.Infrastructure/bin
 DragonAcc.Service/bin
+DragonAcc.Infrastructure
+DragonAcc.Infrastructure
+DragonAcc.Infrastructure/Migrations
+DragonAcc.Infrastructure/Migrations
