@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace DragonAcc.Infrastructure.Entities
 {
-    public class GameServices : EntityBase
+    // Đánh giá website
+    public class Review : EntityBase
     {
-        public string? ServiceName { get; set; }
-        public string? Description { get; set; }
-        public string? Price { get; set; }
-
-    }
+        public int? UserId { get; set; }
+        public string? Comment { get; set; }
+        public int? Rating { get; set; }
+     }
 }

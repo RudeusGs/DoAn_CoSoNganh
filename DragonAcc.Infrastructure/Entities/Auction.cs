@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace DragonAcc.Infrastructure.Entities
 {
-    public class Auctions : EntityBase
+    // Đấu giá
+    public class Auction : EntityBase
     {
-        public InGameItems? _InGameItems { get; set; }
-        public GameAccounts? _GameAccounts { get; set; }
+        public InGameItem? _InGameItems { get; set; }
+        public GameAccount? _GameAccounts { get; set; }
         public string? StartPrice { get; set; }
         public string? CurrentPrice { get; set; }
         public DateTime? StartDateTime { get; set; }

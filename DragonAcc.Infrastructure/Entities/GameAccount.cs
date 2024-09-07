@@ -2,7 +2,8 @@
 
 namespace DragonAcc.Infrastructure.Entities
 {
-    public class GameAccounts : EntityBase
+    // Tài khoản game
+    public class GameAccount : EntityBase
     {
         public string? AccountName { get; set; }
         public string? AccountPassword { get; set; }

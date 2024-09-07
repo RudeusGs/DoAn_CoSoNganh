@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace DragonAcc.Infrastructure.Entities
 {
-    public class DailyCheckIns : EntityBase
+    // Đơn hàng
+    public class Order : EntityBase
     {
-        public DateTime CheckInDate { get; set; }
         public int? UserId { get; set; }
-        public int? SellerId { get; set; }
-        public string? Reward {  get; set; }
-        public int? StreakCount { get; set; }
+        public string? TotalAmount { get; set; }
+        public bool? Status { get; set; }
+
     }
 }

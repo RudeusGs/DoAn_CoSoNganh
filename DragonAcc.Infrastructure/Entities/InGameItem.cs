@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace DragonAcc.Infrastructure.Entities
 {
-    public class InGameItems : EntityBase
+    // Vật phẩm trong game
+    public class InGameItem : EntityBase
     {
         public string? ItemName { get; set; }
         public string? ItemDescription { get; set; }

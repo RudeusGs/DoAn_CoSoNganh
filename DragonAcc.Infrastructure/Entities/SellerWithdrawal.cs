@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace DragonAcc.Infrastructure.Entities
 {
-    public class SellerWithdrawals : EntityBase
+    // Rút tiền về tài khoản dành cho người bán
+    public class SellerWithdrawal : EntityBase
     {
         public string? WithdrawalAmount { get; set; }
         public string? WithdrawalStatus { get; set; }
