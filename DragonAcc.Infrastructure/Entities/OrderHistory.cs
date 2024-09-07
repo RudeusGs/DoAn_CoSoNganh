@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace DragonAcc.Infrastructure.Entities
 {
+    // Lịch sử đơn hàng
     public class OrderHistory : EntityBase
     {
         public int? AuctionId { get; set; }

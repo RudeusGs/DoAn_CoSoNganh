@@ -1,6 +1,8 @@
 ﻿using DragonAcc.Infrastructure.Entities;
 using DragonAcc.Service.Common.IServices;
 using DragonAcc.Service.Common.Services;
+using DragonAcc.Service.Interfaces;
+using DragonAcc.Service.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -35,7 +37,7 @@ namespace DragonAcc.Service
             #endregion
 
             #region Business services
-
+            services.AddScoped<IAuthenticateService, AuthenticateService>();
             #endregion
             return services;
         }
