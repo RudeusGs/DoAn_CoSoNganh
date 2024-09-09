@@ -38,6 +38,8 @@ namespace DragonAcc.Service
 
             #region Business services
             services.AddScoped<IAuthenticateService, AuthenticateService>();
+            services.AddScoped<IGameAccountService, GameAccountService>();
+            /*services.AddScoped<I>*/
             #endregion
             return services;
         }

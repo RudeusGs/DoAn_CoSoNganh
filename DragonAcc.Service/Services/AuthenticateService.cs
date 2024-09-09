@@ -6,11 +6,7 @@ using DragonAcc.Service.Models.Authenticate;
 using DragonAcc.Service.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -86,7 +82,7 @@ namespace DragonAcc.Service.Services
                 {
                     return new ApiResult()
                     {
-                        Message = $"{model.Email}  đã được sử dụng. Vui lòng thử lại!"
+                        Message = $"{model.Email} đã được sử dụng. Vui lòng thử lại!"
                     }; ;
                 }
 
