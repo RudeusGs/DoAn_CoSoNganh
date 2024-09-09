@@ -1,4 +1,6 @@
-﻿using DragonAcc.Service.Models;
+﻿using DragonAcc.Infrastructure.Entities;
+using DragonAcc.Service.Common.IServices;
+using DragonAcc.Service.Models;
 using DragonAcc.Service.Models.Authenticate;
 
 namespace DragonAcc.Service.Interfaces

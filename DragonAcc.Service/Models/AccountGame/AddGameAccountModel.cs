@@ -1,20 +1,20 @@
-﻿using DragonAcc.Infrastructure.Base;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace DragonAcc.Infrastructure.Entities
+namespace DragonAcc.Service.Models.AccountGame
 {
-    // Tài khoản game
-    public class GameAccount : EntityBase
+    public class AddGameAccountModel
     {
         public string? AccountName { get; set; }
         public string? AccountPassword { get; set; }
         public string? Image { get; set; }
-        public int? SellerId { get; set; }
         public string? Price { get; set; }
         public string? Status { get; set; }
         public bool? Earring { get; set; }
-        public string? Planet {  get; set; }
-        public int? Server {  get; set; }
-
-
+        public string? Planet { get; set; }
+        public int? Server { get; set; }
     }
 }
