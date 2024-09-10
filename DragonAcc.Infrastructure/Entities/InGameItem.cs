@@ -11,8 +11,12 @@ namespace DragonAcc.Infrastructure.Entities
     public class InGameItem : EntityBase
     {
         public string? ItemName { get; set; }
+        public int? UserId { get; set; }
+        public int? QuantityOfStar {  get; set; }
+        public string? Type { get; set; }
         public string? ItemDescription { get; set; }
         public string? ItemPrice { get; set; }
+        public string? Planet { get; set; }
         public string? Server {  get; set; }
         public int? Quantity { get; set; }
     }

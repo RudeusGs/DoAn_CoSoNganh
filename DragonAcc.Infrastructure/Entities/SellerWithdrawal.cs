@@ -10,9 +10,9 @@ namespace DragonAcc.Infrastructure.Entities
     // Rút tiền về tài khoản dành cho người bán
     public class SellerWithdrawal : EntityBase
     {
+        public int? SellerId { get; set; }
         public string? WithdrawalAmount { get; set; }
         public string? WithdrawalStatus { get; set; }
-        public string? PaymentMethod { get; set; }
         public string? BankAccountNumber { get; set; }
         public string? BankName { get; set; }
     }

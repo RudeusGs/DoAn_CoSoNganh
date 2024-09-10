@@ -10,8 +10,8 @@ namespace DragonAcc.Infrastructure.Entities
     // Đấu giá
     public class Auction : EntityBase
     {
-        public InGameItem? _InGameItems { get; set; }
-        public GameAccount? _GameAccounts { get; set; }
+        public int? InGameItemId { get; set; }
+        public int? GameAccountId { get; set; }
         public string? StartPrice { get; set; }
         public string? CurrentPrice { get; set; }
         public DateTime? StartDateTime { get; set; }

@@ -13,8 +13,9 @@ namespace DragonAcc.Infrastructure.Entities
         public int? UserId { get; set; }
         public int? GameAccountId { get; set; }
         public int? InGameItemId { get; set; }
-        public string? DepositAmount { get; set; }
-        public DateTime? DepositDate { get; set; }
+        public string? DepositPrice { get; set; }
+        public string? DepositCurrent {  get; set; }
+        public DateTime? DepositDateEnd { get; set; }
         public string? DepositStatus { get; set; }
     }
 }

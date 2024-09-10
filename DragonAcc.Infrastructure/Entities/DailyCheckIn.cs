@@ -12,7 +12,6 @@ namespace DragonAcc.Infrastructure.Entities
     {
         public DateTime CheckInDate { get; set; }
         public int? UserId { get; set; }
-        public int? SellerId { get; set; }
         public string? Reward {  get; set; }
         public int? StreakCount { get; set; }
     }
