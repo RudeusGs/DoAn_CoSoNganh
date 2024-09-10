@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DragonAcc.Infrastructure.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240907163957_donedb1")]
-    partial class donedb1
+    [Migration("20240909133301_CreatenewDb")]
+    partial class CreatenewDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -172,6 +172,9 @@ namespace DragonAcc.Infrastructure.Migrations
                     b.Property<bool?>("Earring")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Image")
+                        .HasColumnType("text");
+
                     b.Property<string>("Planet")
                         .HasColumnType("text");
 
@@ -189,9 +192,6 @@ namespace DragonAcc.Infrastructure.Migrations
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("timestamp without time zone");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
