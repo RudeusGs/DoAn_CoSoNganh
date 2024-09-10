@@ -10,8 +10,9 @@ namespace DragonAcc.Infrastructure.Entities
     // Vòng quay may mắn
     public class LuckyWheel : EntityBase
     {
-        public GameAccount? GameAccounts { get; set; }
-        public InGameItem? InGameItems { get; set; }
+        public int? GameAccountId { get; set; }
+        public int? InGameItemId { get; set; }
+        public string? Price { get; set; }
         public float? Probability { get; set; }
         public int? UserId { get; set; }
     }

@@ -1,11 +1,7 @@
 ﻿using DragonAcc.Infrastructure.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace DragonAcc.Infrastructure
@@ -32,7 +28,8 @@ namespace DragonAcc.Infrastructure
         public virtual DbSet<Deposit> Deposits { get; set; }
         public virtual DbSet<DailyCheckIn> DailyCheckIns { get; set; }
         public virtual DbSet<Auction> Auctions { get; set; }
-
+        public virtual DbSet<Notification> Notifications { get; set; }
+        public virtual DbSet<TransactionDetail> TransactionDetails { get; set; }
 
 
     }

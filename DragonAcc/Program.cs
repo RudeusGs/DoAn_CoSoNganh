@@ -22,7 +22,7 @@ namespace DragonAcc
                 //var commitMsg = Configuration["LastedCommitMsg"];
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "HỌC WEB 2023 API",
+                    Title = "DRAGONACC 2024 WEB API",
                     Version = "v1",
                     // Description = $"Commit hash: {commitHash} <br /> Commit message: {commitMsg}"
                 });

@@ -14,12 +14,10 @@ namespace DragonAcc.Infrastructure
     {
         public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration)
         {
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-
             services.AddSingleton<IDbContextFactory, DbContextFactory>();
             services.AddAppDbContext(configuration);
 
-            // Add Identity
+            // Thêm Identity
             services.AddIdentity<User, IdentityRole<int>>()
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<DataContext>();
@@ -28,7 +26,7 @@ namespace DragonAcc.Infrastructure
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("HocWeb", policy => policy.RequireRole(RoleConstants.ADMIN, RoleConstants.USER));
+                options.AddPolicy("DragonAcc", policy => policy.RequireRole(RoleConstants.ADMIN, RoleConstants.USER, RoleConstants.SELLER));
             });
 
             return services;
@@ -39,7 +37,7 @@ namespace DragonAcc.Infrastructure
         {
             services.AddDbContext<DataContext>(options =>
             {
-                options.UseNpgsql(configuration.GetConnectionString("connection"));
+                options.UseSqlServer(configuration.GetConnectionString("connection"));
                 options.EnableDetailedErrors();
             });
             return services;
