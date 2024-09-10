@@ -1,5 +1,6 @@
 ﻿using DragonAcc.Infrastructure.Entities;
 using DragonAcc.Service.Interfaces;
+using DragonAcc.Service.Models.AccountGame;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,7 @@ namespace DragonAcc.Controllers
         [HttpGet("get-all")]
         public async Task<IActionResult> GetAll()
         {
-            var result = await _gameAccountService.GetAll();
+            var result = await _gameAccountService.GetAll2();
             return Response(result);
         }
 
@@ -37,7 +38,7 @@ namespace DragonAcc.Controllers
 
         [Authorize]
         [HttpPost("add")]
-        public async Task<IActionResult> Add([FromBody] GameAccount model)
+        public async Task<IActionResult> Add([FromBody] AddGameAccountModel model)
         {
             try
             {
@@ -52,7 +53,7 @@ namespace DragonAcc.Controllers
 
         [Authorize]
         [HttpPut("update")]
-        public async Task<IActionResult> Update([FromBody] GameAccount model)
+        public async Task<IActionResult> Update([FromBody] UpdateGameAccountModel model)
         {
             try
             {

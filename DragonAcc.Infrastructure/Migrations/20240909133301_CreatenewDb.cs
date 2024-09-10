@@ -5,7 +5,7 @@
 namespace DragonAcc.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class donedb1 : Migration
+    public partial class CreatenewDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

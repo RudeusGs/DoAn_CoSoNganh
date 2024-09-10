@@ -1,15 +1,14 @@
 ﻿using DragonAcc.Infrastructure.Entities;
 using DragonAcc.Service.Common.IServices;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DragonAcc.Service.Models;
+using DragonAcc.Service.Models.AccountGame;
 
 namespace DragonAcc.Service.Interfaces
 {
     public interface IGameAccountService : IServiceBase<GameAccount>
     {
-
+        public Task<ApiResult> Add(AddGameAccountModel model);
+        public Task<ApiResult> Update(UpdateGameAccountModel model);
+        public Task<ApiResult> GetAll2();
     }
 }
