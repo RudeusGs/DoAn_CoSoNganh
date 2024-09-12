@@ -9,5 +9,6 @@ namespace DragonAcc.Infrastructure.Entities
         public virtual DateTime? CreatedDate { get; set; }
         public virtual DateTime? UpdatedDate { get; set; }
         public virtual DateTime? DeleteDate { get; set; }
+
     }
 }
