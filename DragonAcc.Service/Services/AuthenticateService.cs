@@ -13,7 +13,7 @@ using System.Security.Claims;
 
 namespace DragonAcc.Service.Services
 {
-    public class AuthenticateService : IAuthenticateService
+    public class AuthenticateService :IAuthenticateService
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
@@ -88,11 +88,13 @@ namespace DragonAcc.Service.Services
 
                 User user = new User()
                 {
+                    CreatedDate = DateTime.Now,
                     UserName = model.UserName,
                     Email = model.Email,
                     FullName = model.FullName,
                     SecurityStamp = Guid.NewGuid().ToString(),
                     Balance = model.Balance,
+                    
                 };
 
                 var newUserResult = await _userManager.CreateAsync(user, model.Password);

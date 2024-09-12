@@ -38,7 +38,7 @@ namespace DragonAcc.Service
 
             #region Business services
             services.AddScoped<IAuthenticateService, AuthenticateService>();
-            /*services.AddScoped<I>*/
+            services.AddScoped<IGameAccountService, GameAccountService>();
             #endregion
             return services;
         }
