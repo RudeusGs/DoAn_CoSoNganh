@@ -202,7 +202,7 @@ namespace DragonAcc.Service.Services
                     !string.IsNullOrEmpty(model.AccountName) && x.AccountName == model.AccountName && x.Id != model.Id);
                     if (findCate != null)
                     {
-                        return new() { Message = "Tên Danh mục này đã tồn tại" };
+                        return new() { Message = "Error" };
                     }
 
                     gameAccount.AccountName = model.AccountName ?? gameAccount.AccountName;
@@ -241,7 +241,7 @@ namespace DragonAcc.Service.Services
                 }
             }
 
-            return new() { Message = "Không tìm thấy Category này" };
+            return new() { Message = "Error" };
         }
 
     }

@@ -1,14 +1,12 @@
-﻿using DragonAcc.Infrastructure.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DragonAcc.Infrastructure.Entities
+namespace DragonAcc.Service.Models.GameService
 {
-    // Dịch vụ game
-    public class GameService : EntityBase
+    public class AddGameServiceModel
     {
         public int? GameAccountId { get; set; }
         public string? Server { get; set; }
