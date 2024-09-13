@@ -1,14 +1,12 @@
-﻿using DragonAcc.Infrastructure.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DragonAcc.Infrastructure.Entities
+namespace DragonAcc.Service.Models.GameService
 {
-    // Dịch vụ game
-    public class GameService : EntityBase
+    public class UpdateGameServiceModel
     {
         public int? GameAccountId { get; set; }
         public string? Server { get; set; }
@@ -16,5 +14,6 @@ namespace DragonAcc.Infrastructure.Entities
         public string? Description { get; set; }
         public string? Price { get; set; }
         public string? UserId { get; set; }
+        public bool? IsDelete { get; set; }
     }
 }
