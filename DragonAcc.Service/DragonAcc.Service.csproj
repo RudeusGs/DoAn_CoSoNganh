@@ -10,4 +10,8 @@
     <ProjectReference Include="..\DragonAcc.Infrastructure\DragonAcc.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Gift\" />
+  </ItemGroup>
+
 </Project>
