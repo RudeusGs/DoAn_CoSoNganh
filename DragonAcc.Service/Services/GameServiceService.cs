@@ -83,9 +83,9 @@ namespace DragonAcc.Service.Services
                 {
                     var gameService = new GameService()
                     {
+                        Server = model.Server,
                         ServiceName = model.ServiceName,
                         Description = model.Description,
-                        GameAccountId = model.GameAccountId,
                         Price = model.Price,
                         CreatedDate = _now
                     };
@@ -101,24 +101,68 @@ namespace DragonAcc.Service.Services
                 }
             }
             return new() { Message = "Danh mục game này đã có" };
-        }
+        } 
         public async Task<ApiResult> Update(UpdateGameServiceModel model)
         {
-            var result = await _dataContext.GameServices.FirstOrDefaultAsync(x => x.ServiceName == model.ServiceName);
-            if(result != null) 
+            var gameService = await _dataContext.GameServices
+                               .FirstOrDefaultAsync(x => x.Id == model.Id);
+
+            if (gameService != null)
             {
                 using var tran = _dataContext.Database.BeginTransaction();
                 try
                 {
+                    // Kiểm tra xem có phải là xóa dịch vụ hay không
+                    if (model.IsDelete == true)
+                    {
+                        gameService.DeleteDate = _now;
+                        await _dataContext.SaveChangesAsync();
+                        await tran.CommitAsync();
+                        return new();
+                    }
 
+                    // Nếu không có thông tin nào được cập nhật
+                    if (string.IsNullOrEmpty(model.Description)
+                        && string.IsNullOrEmpty(model.Price))
+                    {
+                        return new() { Message = "Không có thông tin nào được cập nhật" };
+                    }
+
+                    // Kiểm tra nếu tên dịch vụ trùng lặp nhưng không phải là cùng một dịch vụ
+                    var existingService = await _dataContext.GameServices
+                        .FirstOrDefaultAsync(x => x.ServiceName == model.ServiceName && x.Id != gameService.Id);
+
+                    if (existingService != null)
+                    {
+                        return new() { Message = "Tên dịch vụ đã tồn tại" };
+                    }
+
+                    // Cập nhật thông tin dịch vụ
+                    gameService.Server = model.Server ?? gameService.Server;
+                    gameService.Description = model.Description ?? gameService.Description;
+                    gameService.Price = model.Price ?? gameService.Price;
+                    gameService.UpdatedDate = _now;
+
+                    // Nếu không phải là xóa, thì đặt lại DeleteDate
+                    if (model.IsDelete == false)
+                    {
+                        gameService.DeleteDate = null;
+                    }
+
+                    // Lưu các thay đổi vào cơ sở dữ liệu
+                    await _dataContext.SaveChangesAsync();
+                    await tran.CommitAsync();
+                    return new();
                 }
-                catch(Exception e) 
+                catch (Exception e)
                 {
                     await tran.RollbackAsync();
                     throw new Exception(e.Message);
                 }
             }
-            return new() { Message = "Danh mục game này không tồn tại!" };
+
+            return new() { Message = "Dịch vụ game này không tồn tại!" };
         }
+
     }
 }

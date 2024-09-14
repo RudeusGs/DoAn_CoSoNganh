@@ -8,12 +8,11 @@ namespace DragonAcc.Service.Models.GameService
 {
     public class UpdateGameServiceModel
     {
-        public int? GameAccountId { get; set; }
-        public string? Server { get; set; }
+        public int? Id { get; set; }
+        public int? Server { get; set; }
         public string? ServiceName { get; set; }
         public string? Description { get; set; }
         public string? Price { get; set; }
-        public string? UserId { get; set; }
         public bool? IsDelete { get; set; }
     }
 }

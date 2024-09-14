@@ -40,6 +40,7 @@ namespace DragonAcc.Service
             services.AddScoped<IAuthenticateService, AuthenticateService>();
             services.AddScoped<IGameAccountService, GameAccountService>();
             services.AddScoped<IGameServiceService, GameServiceService>();
+            services.AddScoped<IGiftService, GiftService>();
             #endregion
             return services;
         }

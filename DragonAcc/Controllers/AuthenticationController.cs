@@ -9,7 +9,7 @@ namespace DragonAcc.Controllers
     public class AuthenticateController : BaseController
     {
         private readonly IAuthenticateService _authenticateService;
-
+    
         public AuthenticateController(IAuthenticateService authenticateService)
         {
             _authenticateService = authenticateService;

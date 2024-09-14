@@ -214,14 +214,14 @@ namespace DragonAcc.Infrastructure.Migrations
                     b.Property<string>("Price")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("Server")
+                        .HasColumnType("int");
+
                     b.Property<string>("ServiceName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -242,8 +242,8 @@ namespace DragonAcc.Infrastructure.Migrations
                     b.Property<DateTime?>("DeleteDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<TimeSpan?>("Expiry")
-                        .HasColumnType("time");
+                    b.Property<DateTime?>("Expiry")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("GiftCode")
                         .HasColumnType("nvarchar(max)");
