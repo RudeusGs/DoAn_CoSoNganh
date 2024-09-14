@@ -3,6 +3,8 @@ using DragonAcc.Infrastructure.Entities;
 using DragonAcc.Service.Interfaces;
 using DragonAcc.Service.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace DragonAcc.Service.Services
 {
@@ -26,7 +28,7 @@ namespace DragonAcc.Service.Services
             try
             {
                 model.GiftCode = GenerateGiftCode();
-                model.CreatedDate = DateTime.UtcNow;
+                model.CreatedDate = DateTime.Now;
                 _dataContext.Gifts.Add(model);
                 await _dataContext.SaveChangesAsync();
                 await tran.CommitAsync();
@@ -46,7 +48,7 @@ namespace DragonAcc.Service.Services
         public async Task<ApiResult> Delete(int id)
         {
             var expiredGifts = await _dataContext.Gifts
-                .Where(x => x.Expiry.HasValue && x.Expiry.Value <= DateTime.UtcNow)
+                .Where(x => x.Expiry.HasValue && x.Expiry.Value <= DateTime.Now)
                 .ToListAsync();
 
             if (expiredGifts.Count == 0)
@@ -81,7 +83,7 @@ namespace DragonAcc.Service.Services
         public async Task<ApiResult> Delete()
         {
             var expiredGifts = await _dataContext.Gifts
-                .Where(x => x.Expiry.HasValue && x.Expiry.Value <= DateTime.UtcNow)
+                .Where(x => x.Expiry.HasValue && x.Expiry.Value <= DateTime.Now)
                 .ToListAsync();
 
             if (expiredGifts.Count != 0)
@@ -89,27 +91,31 @@ namespace DragonAcc.Service.Services
                 using var tran = await _dataContext.Database.BeginTransactionAsync();
                 try
                 {
+                    int deletedCount = expiredGifts.Count;
                     _dataContext.Gifts.RemoveRange(expiredGifts);
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
 
                     return new ApiResult
                     {
-                        Message = "Các mã quà tặng hết hạn đã được xóa thành công!",
+                        Message = $"Các mã quà tặng hết hạn đã được xóa thành công! Số lượng đã xóa: {deletedCount}",
                     };
                 }
                 catch (Exception e)
                 {
                     await tran.RollbackAsync();
-                    
+                    return new ApiResult
+                    {
+                        Message = $"Có lỗi xảy ra khi xóa các mã quà tặng hết hạn: {e.Message}",
+                    };
                 }
             }
-            return new()
+
+            return new ApiResult
             {
-                Message = "Có lỗi xảy ra khi xóa các mã quà tặng hết hạn: "
+                Message = "Không có mã quà tặng nào hết hạn cần xóa."
             };
         }
-
 
         public Task<ApiResult> GetAll()
         {
