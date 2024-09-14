@@ -1,16 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using DragonAcc.Infrastructure;
-using DragonAcc.Infrastructure.Entities;
-using Microsoft.AspNetCore.Authorization;
-using DragonAcc.Service.Services;
-using DragonAcc.Service.Interfaces;
+﻿using DragonAcc.Service.Interfaces;
 using DragonAcc.Service.Models.GameService;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DragonAcc.Controllers
 {
@@ -18,13 +9,11 @@ namespace DragonAcc.Controllers
     [ApiController]
     public class GameServiceController : BaseController
     {
-        private IGameServiceService _gameServiceService;
+        private readonly IGameServiceService _gameServiceService;
         public GameServiceController(IGameServiceService gameServiceService)
         {
             _gameServiceService = gameServiceService;
         }
-
-        [Authorize]
         [HttpGet("get-all")]
         public async Task<IActionResult> GetAll()
         {
@@ -32,12 +21,49 @@ namespace DragonAcc.Controllers
             return Response(result);
         }
 
-        [Authorize]
         [HttpGet("get-by-id")]
-        public async Task<IActionResult> GetById(int Id)
+        public async Task<IActionResult> GetById([FromQuery] int id)
         {
-            var result = await _gameServiceService.GetById(Id);
-            return Response(result);
+            try
+            {
+                var result = await _gameServiceService.GetById(id);
+                return Response(result);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpPost("add")]
+        public async Task<IActionResult> Add([FromForm] AddGameServiceModel model)
+        {
+            try
+            {
+                var result = await _gameServiceService.Add(model);
+                return Response(result);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+
+        [Authorize]
+        [HttpPut("update")]
+        public async Task<IActionResult> Update([FromForm] UpdateGameServiceModel model)
+        {
+            try
+            {
+                var result = await _gameServiceService.Update(model);
+                return Response(result);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         [Authorize]
@@ -51,21 +77,7 @@ namespace DragonAcc.Controllers
             }
             catch (Exception e)
             {
-                return Response(e, 500);
-            }
-        }
-        [Authorize]
-        [HttpPost("add")]
-        public async Task<IActionResult> Add([FromBody] AddGameServiceModel model)
-        {
-            try
-            {
-                var result = await _gameServiceService.Add(model);
-                return Response(result);
-            }
-            catch (Exception e)
-            {
-                return Response(e, 500);
+                throw new Exception(e.Message);
             }
         }
     }
