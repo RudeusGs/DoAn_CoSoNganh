@@ -3,6 +3,7 @@ using DragonAcc.Service.Common.IServices;
 using DragonAcc.Service.Common.Services;
 using DragonAcc.Service.Interfaces;
 using DragonAcc.Service.Services;
+using HocWeb.Service.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -35,12 +36,14 @@ namespace DragonAcc.Service
             // Ftp
             services.AddScoped<IFtpDirectoryService, FtpDirectoryService>();
             #endregion
-
+            services.AddHttpContextAccessor();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
             #region Business services
             services.AddScoped<IAuthenticateService, AuthenticateService>();
             services.AddScoped<IGameAccountService, GameAccountService>();
             services.AddScoped<IGameServiceService, GameServiceService>();
             services.AddScoped<IGiftService, GiftService>();
+            services.AddScoped<IReviewService, ReviewService>();
             #endregion
             return services;
         }

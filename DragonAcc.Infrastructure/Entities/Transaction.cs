@@ -10,7 +10,6 @@ namespace DragonAcc.Infrastructure.Entities
     // Giao dịch nạp tiền
     public class Transaction : EntityBase
     {
-        public int? UserId { get; set; }
         public int? SellerId { get; set; }
         public string? PaymentMethod { get; set; }         
         public bool? Status { get; set; }

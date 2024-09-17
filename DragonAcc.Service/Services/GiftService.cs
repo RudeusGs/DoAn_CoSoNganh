@@ -13,6 +13,11 @@ namespace DragonAcc.Service.Services
         public GiftService(DataContext dataContext,Common.IServices.IUserService userService) : base(dataContext, userService)
         {            
         }
+        public async Task<ApiResult> GetAll()
+        {
+            var result = await _dataContext.Gifts.ToListAsync();
+            return new(result);
+        }
         private string GenerateGiftCode()
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -115,11 +120,6 @@ namespace DragonAcc.Service.Services
             {
                 Message = "Không có mã quà tặng nào hết hạn cần xóa."
             };
-        }
-
-        public Task<ApiResult> GetAll()
-        {
-            throw new NotImplementedException();
         }
 
         public Task<ApiResult> GetById(int id)
