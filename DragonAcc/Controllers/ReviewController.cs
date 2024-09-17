@@ -1,36 +1,35 @@
 ﻿using DragonAcc.Infrastructure.Entities;
 using DragonAcc.Service.Interfaces;
-using DragonAcc.Service.Models.GameService;
+using DragonAcc.Service.Models.Review;
 using DragonAcc.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 
 namespace DragonAcc.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GiftController : BaseController
+    public class ReviewController : BaseController
     {
-        private readonly IGiftService _giftService;
-        public GiftController(IGiftService giftService)
+        private readonly IReviewService _reviewService;
+        public ReviewController(IReviewService reviewService)
         {
-            _giftService = giftService;
+            _reviewService = reviewService;
         }
-
         [HttpGet("get-all")]
         public async Task<IActionResult> GetAll()
         {
-            var result = await _giftService.GetAll();
+            var result = await _reviewService.GetAll();
             return Response(result);
         }
-
         [Authorize]
         [HttpPost("add")]
-        public async Task<IActionResult> Add([FromForm] Gift model)
+        public async Task<IActionResult> Add([FromForm] AddReviewModel model)
         {
             try
             {
-                var result = await _giftService.Add(model);
+                var result = await _reviewService.Add(model);
                 return Response(result);
             }
             catch (Exception e)
@@ -38,13 +37,12 @@ namespace DragonAcc.Controllers
                 throw new Exception(e.Message);
             }
         }
-        [Authorize]
-        [HttpDelete("Delete")]
-        public async Task<IActionResult> Delete()
+        [HttpGet("get-by-user-id")]
+        public async Task<IActionResult> GetByUserId()
         {
             try
             {
-                var result = await _giftService.Delete();
+                var result = await _reviewService.GetUserId();
                 return Response(result);
             }
             catch (Exception e)

@@ -2,10 +2,13 @@
 using DragonAcc.Service.Common.IServices;
 using DragonAcc.Service.Models.GameService;
 using DragonAcc.Service.Models;
+using DragonAcc.Service.Models.Review;
+
 namespace DragonAcc.Service.Interfaces
 {
-    public interface IGiftService : IServiceBase<Gift>
+    public interface IReviewService : IServiceBase<Review>
     {
-        public Task<ApiResult> Delete();
+        public Task<ApiResult> Add(AddReviewModel model);
+       public Task<ApiResult> GetUserId();
     }
 }
