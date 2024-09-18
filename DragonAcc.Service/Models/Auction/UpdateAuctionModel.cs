@@ -1,17 +1,18 @@
-﻿using DragonAcc.Infrastructure.Base;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace DragonAcc.Infrastructure.Entities
+namespace DragonAcc.Service.Models.Auction
 {
-    // Đấu giá
-    public class Auction : EntityBase
+    public class UpdateAuctionModel
     {
         public int? InGameItemId { get; set; }
         public int? GameAccountId { get; set; }
-        public int? AuctionName {  get; set; }
         public string? StartPrice { get; set; }
         public string? CurrentPrice { get; set; }
         public DateTime? StartDateTime { get; set; }
         public TimeSpan? TimeAuction { get; set; }
-        public int? UserId { get; set; }
     }
 }

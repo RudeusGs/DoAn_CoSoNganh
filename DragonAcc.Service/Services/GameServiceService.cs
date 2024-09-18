@@ -78,7 +78,7 @@ namespace DragonAcc.Service.Services
             var result = await _dataContext.GameServices.FirstOrDefaultAsync(x => x.ServiceName == model.ServiceName);
             if(result == null)
             {
-                using var tran = _dataContext.Database.BeginTransaction();
+                using var tran = _dataContext.Database.BeginTransaction ();
                 try
                 {
                     var gameService = new GameService()
@@ -149,7 +149,6 @@ namespace DragonAcc.Service.Services
                         gameService.DeleteDate = null;
                     }
 
-                    // Lưu các thay đổi vào cơ sở dữ liệu
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
                     return new();
