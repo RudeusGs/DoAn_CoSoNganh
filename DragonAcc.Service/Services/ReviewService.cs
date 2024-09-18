@@ -3,17 +3,14 @@ using DragonAcc.Infrastructure.Entities;
 using DragonAcc.Service.Interfaces;
 using DragonAcc.Service.Models;
 using DragonAcc.Service.Models.Review;
-using HocWeb.Service.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace DragonAcc.Service.Services
 {
     public class ReviewService : BaseService, IReviewService
     {
-        private readonly ICurrentUserService _currentUserService;
-        public ReviewService(DataContext dataContext, Common.IServices.IUserService userService, ICurrentUserService currentUserService) : base(dataContext, userService)
+        public ReviewService(DataContext dataContext, Common.IServices.IUserService userService) : base(dataContext, userService)
         {
-            _currentUserService = currentUserService;
         }
 
         public async Task<ApiResult> Add(Review model)
@@ -22,34 +19,17 @@ namespace DragonAcc.Service.Services
         }
         public async Task<ApiResult> Add(AddReviewModel model)
         {
-            var userId = await _currentUserService.GetCurrentUserIdAsync();
-
-            if (!userId.HasValue)
+            var review = new Review
             {
-                return new ApiResult { Message = "User not authenticated" };
-            }
+                Comment = model.Comment,
+                Rating = model.Rating,
+                UserId = _userService.UserId
+            };
 
-            using var tran = _dataContext.Database.BeginTransaction();
-            try
-            {
-                var newReview = new Review
-                {
-                    UserId = userId.Value,
-                    Comment = model.Comment,
-                    Rating = model.Rating,
-                    CreatedDate = DateTime.UtcNow
-                };
+            await _dataContext.Reviews.AddAsync(review);
+            await _dataContext.SaveChangesAsync();
 
-                _dataContext.Reviews.Add(newReview);
-                await _dataContext.SaveChangesAsync();
-                await tran.CommitAsync();
-                return new ApiResult { Data = newReview };
-            }
-            catch (Exception e)
-            {
-                await tran.RollbackAsync();
-                throw new Exception(e.Message);
-            }
+            return new ApiResult(review);
         }
 
         public async Task<ApiResult> GetUserId()
