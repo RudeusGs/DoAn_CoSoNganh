@@ -3,15 +3,8 @@ using DragonAcc.Service.Common.IServices;
 using DragonAcc.Service.Common.Services;
 using DragonAcc.Service.Interfaces;
 using DragonAcc.Service.Services;
-using HocWeb.Service.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace DragonAcc.Service
 {
@@ -37,7 +30,6 @@ namespace DragonAcc.Service
             services.AddScoped<IFtpDirectoryService, FtpDirectoryService>();
             #endregion
             services.AddHttpContextAccessor();
-            services.AddScoped<ICurrentUserService, CurrentUserService>();
             #region Business services
             services.AddScoped<IAuthenticateService, AuthenticateService>();
             services.AddScoped<IGameAccountService, GameAccountService>();
