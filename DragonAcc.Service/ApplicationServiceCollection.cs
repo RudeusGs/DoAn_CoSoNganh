@@ -36,6 +36,7 @@ namespace DragonAcc.Service
             services.AddScoped<IGameServiceService, GameServiceService>();
             services.AddScoped<IGiftService, GiftService>();
             services.AddScoped<IReviewService, ReviewService>();
+            services.AddScoped<IAuctionService, AuctionService>();
             #endregion
             return services;
         }

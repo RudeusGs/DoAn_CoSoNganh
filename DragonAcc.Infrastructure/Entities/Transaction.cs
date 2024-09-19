@@ -11,6 +11,7 @@ namespace DragonAcc.Infrastructure.Entities
     public class Transaction : EntityBase
     {
         public int? SellerId { get; set; }
+        public int? UserId { get; set; }
         public string? PaymentMethod { get; set; }         
         public bool? Status { get; set; }
 
