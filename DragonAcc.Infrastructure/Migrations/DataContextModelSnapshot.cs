@@ -30,6 +30,9 @@ namespace DragonAcc.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int?>("Id"));
 
+                    b.Property<string>("AuctionName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
@@ -51,8 +54,8 @@ namespace DragonAcc.Infrastructure.Migrations
                     b.Property<string>("StartPrice")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<TimeSpan?>("TimeAuction")
-                        .HasColumnType("time");
+                    b.Property<string>("TimeAuction")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -291,8 +294,8 @@ namespace DragonAcc.Infrastructure.Migrations
                     b.Property<string>("Server")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("StarQ")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("StarQ")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");

@@ -10,9 +10,9 @@ namespace DragonAcc.Service.Models.Auction
     {
         public int? InGameItemId { get; set; }
         public int? GameAccountId { get; set; }
+        public string? AucionName { get; set; }
         public string? StartPrice { get; set; }
-        public string? CurrentPrice { get; set; }
         public DateTime? StartDateTime { get; set; }
-        public TimeSpan? TimeAuction { get; set; }
+        public string? TimeAuction { get; set; }
     }
 }

@@ -29,16 +29,15 @@ namespace DragonAcc.Service.Services
                 using var tran = await _dataContext.Database.BeginTransactionAsync();
                 try
                 {
+                    var timeAuction = TimeSpan.Parse(model.TimeAuction);
                     var newAuction = new Auction
                     {
                         AuctionName = model.AuctionName,
                         GameAccountId = model.GameAccountId,
                         InGameItemId = model.InGameItemId,
-                        UserId = _userService.UserId,
                         StartPrice = model.StartPrice,
-                        CurrentPrice = model.CurrentPrice,
                         StartDateTime = model.StartDateTime,
-                        TimeAuction = model.TimeAuction,
+                        TimeAuction = timeAuction.ToString(@"hh\:mm\:ss"),
                         CreatedDate = DateTime.Now,
                     };
                     _dataContext.Auctions.Add(newAuction);
@@ -78,9 +77,10 @@ namespace DragonAcc.Service.Services
             return new ApiResult() { Message = "Không tìm thấy đấu giá này." };
         }
 
-        public Task<ApiResult> GetAll()
+        public async Task<ApiResult> GetAll()
         {
-            throw new NotImplementedException();
+            var result = await _dataContext.Auctions.ToListAsync();
+            return new(result);
         }
 
         public Task<ApiResult> GetById(int id)
@@ -93,9 +93,31 @@ namespace DragonAcc.Service.Services
             throw new NotImplementedException();
         }
 
-        public Task<ApiResult> Update(UpdateAuctionModel model)
+        public async Task<ApiResult> Update(UpdateAuctionModel model)
         {
-            throw new NotImplementedException();
+            var auction = await _dataContext.Auctions.FirstOrDefaultAsync(x => x.AuctionName == model.AucionName);
+            if (auction != null)
+            {
+                using var tran = await _dataContext.Database.BeginTransactionAsync();
+                try
+                {
+                    auction.StartPrice = model.StartPrice;
+                    auction.GameAccountId = model.GameAccountId;
+                    auction.InGameItemId = model.InGameItemId;
+                    auction.StartDateTime = model.StartDateTime;
+                    auction.TimeAuction = model.TimeAuction;
+                    auction.UpdatedDate = _now;
+                    await _dataContext.SaveChangesAsync();
+                    await tran.CommitAsync();
+                    return new();
+                }
+                catch (Exception e)
+                {
+                    await tran.RollbackAsync();
+                    throw new Exception(e.Message);
+                }
+            }
+            return new ApiResult() { Message = "Không tìm thấy phiên đấu giá này." };
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using DragonAcc.Infrastructure.Entities;
 using DragonAcc.Service.Interfaces;
+using DragonAcc.Service.Models.AccountGame;
 using DragonAcc.Service.Models.Auction;
 using DragonAcc.Service.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -37,6 +38,20 @@ namespace DragonAcc.Controllers
             try
             {
                 var result = await _auctionService.Delete(id);
+                return Response(result);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+        [Authorize]
+        [HttpPut("update")]
+        public async Task<IActionResult> Update([FromForm] UpdateAuctionModel model)
+        {
+            try
+            {
+                var result = await _auctionService.Update(model);
                 return Response(result);
             }
             catch (Exception e)
