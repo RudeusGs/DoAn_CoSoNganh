@@ -8,6 +8,7 @@ namespace DragonAcc.Service.Interfaces
     public interface IAuctionService : IServiceBase<Auction>
     {
         public Task<ApiResult> Add(AddAuctionModel model);
-       public Task<ApiResult> Update(UpdateAuctionModel model);
+        public Task<ApiResult> Update(UpdateAuctionModel model);
+        public Task<ApiResult> UpdateCurrentPrice(UpdateCurrentPriceModel model);
     }
 }

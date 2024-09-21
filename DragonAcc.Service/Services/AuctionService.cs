@@ -1,7 +1,6 @@
 ﻿using DragonAcc.Infrastructure;
 using DragonAcc.Infrastructure.Entities;
 using DragonAcc.Service.Common.IServices;
-using DragonAcc.Service.Common.Services;
 using DragonAcc.Service.Interfaces;
 using DragonAcc.Service.Models;
 using DragonAcc.Service.Models.Auction;
@@ -32,9 +31,8 @@ namespace DragonAcc.Service.Services
                     var timeAuction = TimeSpan.Parse(model.TimeAuction);
                     var newAuction = new Auction
                     {
+                        Prize = model.Prize,
                         AuctionName = model.AuctionName,
-                        GameAccountId = model.GameAccountId,
-                        InGameItemId = model.InGameItemId,
                         StartPrice = model.StartPrice,
                         StartDateTime = model.StartDateTime,
                         TimeAuction = timeAuction.ToString(@"hh\:mm\:ss"),
@@ -102,8 +100,6 @@ namespace DragonAcc.Service.Services
                 try
                 {
                     auction.StartPrice = model.StartPrice;
-                    auction.GameAccountId = model.GameAccountId;
-                    auction.InGameItemId = model.InGameItemId;
                     auction.StartDateTime = model.StartDateTime;
                     auction.TimeAuction = model.TimeAuction;
                     auction.UpdatedDate = _now;
@@ -119,5 +115,42 @@ namespace DragonAcc.Service.Services
             }
             return new ApiResult() { Message = "Không tìm thấy phiên đấu giá này." };
         }
+        public async Task<ApiResult> UpdateCurrentPrice(UpdateCurrentPriceModel model)
+        {
+            var auction = await _dataContext.Auctions.FirstOrDefaultAsync(x => x.Id == model.Id);
+
+            if (auction == null)
+            {
+                return new ApiResult() { Message = "Không tìm thấy phiên đấu giá." };
+            }
+            if (decimal.TryParse(model.CurrentPrice, out decimal newPrice))
+            {
+                if (newPrice > decimal.Parse(auction.StartPrice))
+                {
+                    using var tran = await _dataContext.Database.BeginTransactionAsync();
+                    try
+                    {
+                        auction.StartPrice = newPrice.ToString();
+                        await _dataContext.SaveChangesAsync();
+                        await tran.CommitAsync();
+                        return new ApiResult() { Message = "Cập nhật giá thành công.", Data = auction };
+                    }
+                    catch (Exception ex)
+                    {
+                        await tran.RollbackAsync();
+                        throw new Exception(ex.Message);
+                    }
+                }
+                else
+                {
+                    return new ApiResult() { Message = "Giá đặt mới thấp hơn giá hiện tại." };
+                }
+            }
+            else
+            {
+                return new ApiResult() { Message = "Số tiền không hợp lệ." };
+            }
+        }
+
     }
 }

@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 
 namespace DragonAcc.Infrastructure.Entities
 {
-    // Top nạp tiền
+    /* 
+     * Top nạp tiền
+     * API Endpoint Design: add, delete, getall, getbyid
+     */
     public class TopRecharger : EntityBase
     {
         public int? UserId { get; set; }

@@ -7,13 +7,16 @@ using System.Threading.Tasks;
 
 namespace DragonAcc.Infrastructure.Entities
 {
-    // Vật phẩm trong game
+    /* 
+     * Admin: thêm, sửa, xóa
+     * User: mua
+     * API Endpoint Design: add, update, delete, getall, getbyid
+     */
     public class InGameItem : EntityBase
     {
         public string? ItemName { get; set; }
         public string? ItemDescription { get; set; }
         public string? ItemPrice { get; set; }
-        public string? GameAccountId { get; set; }
         public int? StarQ { get; set; }
         public string? Server {  get; set; }
         public int? Quantity { get; set; }

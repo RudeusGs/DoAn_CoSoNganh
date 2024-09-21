@@ -14,7 +14,6 @@ namespace DragonAcc.Infrastructure
 
         public virtual DbSet<Transaction> Transactions { get; set; }
         public virtual DbSet<TopRecharger> TopRechargers { get; set; }
-        public virtual DbSet<SellerWithdrawal> SellerWithdrawals { get; set; }
         public virtual DbSet<Review> Reviews { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<OrderHistory> OrderHistorys { get; set; }
@@ -24,7 +23,6 @@ namespace DragonAcc.Infrastructure
         public virtual DbSet<Gift> Gifts { get; set; }
         public virtual DbSet<GameService> GameServices { get; set; }
         public virtual DbSet<GameAccount> GameAccounts { get; set; }
-        public virtual DbSet<Deposit> Deposits { get; set; }
         public virtual DbSet<DailyCheckIn> DailyCheckIns { get; set; }
         public virtual DbSet<Auction> Auctions { get; set; }
         public virtual DbSet<TransactionDetail > TransactionDetails { get; set; }

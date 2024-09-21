@@ -35,7 +35,7 @@ namespace DragonAcc.Controllers
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                return Response(e.Message, 500);
             }
         }
         [Authorize]
@@ -49,7 +49,7 @@ namespace DragonAcc.Controllers
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                return Response(e.Message, 500);
             }
         }
     }

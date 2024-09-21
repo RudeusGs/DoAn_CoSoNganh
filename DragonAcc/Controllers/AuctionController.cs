@@ -28,7 +28,7 @@ namespace DragonAcc.Controllers
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                return Response(e.Message, 500);
             }
         }
         [Authorize]
@@ -42,7 +42,7 @@ namespace DragonAcc.Controllers
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                return Response(e.Message, 500);
             }
         }
         [Authorize]
@@ -56,8 +56,24 @@ namespace DragonAcc.Controllers
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                return Response(e.Message, 500);
             }
         }
+        [Authorize]
+        [HttpPost("update-current-price")]
+        public async Task<IActionResult> UpdateCurrentPrice([FromBody] UpdateCurrentPriceModel model)
+        {
+            try
+            {
+                var result = await _auctionService.UpdateCurrentPrice(model);
+                return Response(result);
+            
+            }
+            catch(Exception e)
+            {
+                return Response(e.Message, 500);
+            }
+        }
+
     }
 }

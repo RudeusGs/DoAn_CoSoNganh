@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 
 namespace DragonAcc.Infrastructure.Entities
 {
-    // Vòng quay may mắn
+    /* 
+     * Admin: thêm, sửa, xóa
+     * User: quay
+     * API Endpoint Design: add, update, delete, getall
+     */
     public class LuckyWheel : EntityBase
     {
-        public int? GameAccountId { get; set; }
-        public int? InGameItemId { get; set; }
+        public int? Prize { get; set; }
         public float? Probability { get; set; }
         public int? UserId { get; set; }
     }

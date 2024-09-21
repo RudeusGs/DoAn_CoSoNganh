@@ -31,7 +31,7 @@ namespace DragonAcc.Controllers
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                return Response(e.Message, 500);
             }
         }
 
@@ -46,7 +46,7 @@ namespace DragonAcc.Controllers
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                return Response(e.Message, 500);
             }
         }
 
@@ -62,7 +62,7 @@ namespace DragonAcc.Controllers
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                return Response(e.Message, 500);
             }
         }
 
@@ -77,7 +77,7 @@ namespace DragonAcc.Controllers
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                return Response(e.Message, 500);
             }
         }
     }

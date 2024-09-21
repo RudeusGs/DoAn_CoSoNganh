@@ -58,7 +58,6 @@ namespace DragonAcc.Service.Services
                             };
                         }
                     }
-
                 }
 
                 return new ApiResult()
@@ -92,6 +91,7 @@ namespace DragonAcc.Service.Services
                     UserName = model.UserName,
                     Email = model.Email,
                     FullName = model.FullName,
+                    Coin = 0,
                     SecurityStamp = Guid.NewGuid().ToString(),
                     Balance = model.Balance,
                     
