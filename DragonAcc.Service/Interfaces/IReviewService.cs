@@ -9,6 +9,5 @@ namespace DragonAcc.Service.Interfaces
     public interface IReviewService : IServiceBase<Review>
     {
         public Task<ApiResult> Add(AddReviewModel model);
-       public Task<ApiResult> GetUserId();
     }
 }

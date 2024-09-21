@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 
 namespace DragonAcc.Infrastructure.Entities
 {
-    // Đánh giá website
+    /* 
+     * Đánh giá webiste
+     * API Endpoint Design: add, delete, getall
+     */
     public class Review : EntityBase
     {
         public int? UserId { get; set; }

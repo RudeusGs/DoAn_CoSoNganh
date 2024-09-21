@@ -26,7 +26,7 @@ namespace DragonAcc.Infrastructure
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("DragonAcc", policy => policy.RequireRole(RoleConstants.ADMIN, RoleConstants.USER, RoleConstants.SELLER));
+                options.AddPolicy("DragonAcc", policy => policy.RequireRole(RoleConstants.ADMIN, RoleConstants.USER));
             });
 
             return services;

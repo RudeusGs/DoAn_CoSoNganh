@@ -5,6 +5,5 @@ namespace DragonAcc.Infrastructure.Constants
     {
         public const string ADMIN = "Admin";
         public const string USER = "User";
-        public const string SELLER = "Seller";
     }
 }

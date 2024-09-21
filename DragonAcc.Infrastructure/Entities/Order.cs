@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 
 namespace DragonAcc.Infrastructure.Entities
 {
-    // Đơn hàng
+    /* 
+     * Đơn hàng
+     * API Endpoint Design: add, update, delete, getall, getbyid
+     */
     public class Order : EntityBase
     {
         public int? UserId { get; set; }

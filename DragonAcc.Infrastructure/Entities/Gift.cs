@@ -7,7 +7,11 @@ using System.Threading.Tasks;
 
 namespace DragonAcc.Infrastructure.Entities
 {
-    // Mã quà tặng
+    /* 
+     * Admin: thêm, sửa, xóa
+     * User: sử dụng
+     * API Endpoint Design: add, update, delete, getall
+     */
     public class Gift : EntityBase
     {
         public string? GiftCode { get; set; }

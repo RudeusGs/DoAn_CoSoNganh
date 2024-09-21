@@ -34,20 +34,7 @@ namespace DragonAcc.Controllers
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
-            }
-        }
-        [HttpGet("get-by-user-id")]
-        public async Task<IActionResult> GetByUserId()
-        {
-            try
-            {
-                var result = await _reviewService.GetUserId();
-                return Response(result);
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
+                return Response(e.Message, 500);
             }
         }
     }

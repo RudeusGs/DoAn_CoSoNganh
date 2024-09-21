@@ -23,20 +23,14 @@ namespace DragonAcc.Service.Services
             {
                 Comment = model.Comment,
                 Rating = model.Rating,
-                UserId = _userService.UserId
+                UserId = _userService.UserId,
+                CreatedDate = DateTime.Now
             };
 
             await _dataContext.Reviews.AddAsync(review);
             await _dataContext.SaveChangesAsync();
 
             return new ApiResult(review);
-        }
-
-        public async Task<ApiResult> GetUserId()
-        {
-            var result = await _dataContext.Reviews
-               .Where(x => x.UserId == _userService.UserId).ToListAsync();
-            return new(result);
         }
         public async Task<ApiResult> Delete(int id)
         {

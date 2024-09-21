@@ -63,7 +63,6 @@ namespace DragonAcc.Service.Services
         public async Task<ApiResult> GetById(int id)
         {
             var result = await _dataContext.GameAccounts.FirstOrDefaultAsync(x => x.Id == id);
-
             return new(result);
 
         }

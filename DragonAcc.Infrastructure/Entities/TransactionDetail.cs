@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace DragonAcc.Infrastructure.Entities
 {
+    /* 
+     * Chi tiết giao dịch nạp tiền
+     * API Endpoint Design: add, delete, getall, getbyid
+     */
     public class TransactionDetail : EntityBase
     {
         public int? TransactionId { get; set; }

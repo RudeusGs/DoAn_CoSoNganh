@@ -1,19 +1,16 @@
 ﻿using DragonAcc.Infrastructure.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DragonAcc.Infrastructure.Entities
 {
-    // Điểm danh hằng ngày
+    /*  Admin: tạo ra bảng điểm danh
+     *  User sẽ điểm danh để nhận phần thưởng hằng ngày
+     *  API Endpoint Design: add, update, delete, getall, getbyid
+     */
     public class DailyCheckIn : EntityBase
     {
-        public DateTime CheckInDate { get; set; }
+        public DateTime? CheckInDate { get; set; }
         public int? UserId { get; set; }
-        public int? SellerId { get; set; }
-        public string? Coin {  get; set; }
+        public int? Coin {  get; set; }
         public int? StreakCount { get; set; }
     }
 }

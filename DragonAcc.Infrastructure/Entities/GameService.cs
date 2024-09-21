@@ -7,7 +7,11 @@ using System.Threading.Tasks;
 
 namespace DragonAcc.Infrastructure.Entities
 {
-    // Dịch vụ game
+    /* 
+     * Admin: thêm, sửa, xóa
+     * User: mua
+     * API Endpoint Design: add, update, delete, getall
+     */
     public class GameService : EntityBase
     {
         public int? Server { get; set; }

@@ -6,6 +6,7 @@ namespace DragonAcc.Infrastructure.Entities
     {
         public string? FullName { get; set; }
         public string? Balance { get; set; }
+        public int? Coin { get; set; }
         public virtual DateTime? CreatedDate { get; set; }
         public virtual DateTime? UpdatedDate { get; set; }
         public virtual DateTime? DeleteDate { get; set; }
