@@ -61,7 +61,7 @@ namespace DragonAcc.Controllers
         }
         [Authorize]
         [HttpPost("update-current-price")]
-        public async Task<IActionResult> UpdateCurrentPrice([FromBody] UpdateCurrentPriceModel model)
+        public async Task<IActionResult> UpdateCurrentPrice([FromForm] UpdateCurrentPriceModel model)
         {
             try
             {
