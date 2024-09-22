@@ -29,7 +29,6 @@ namespace DragonAcc.Service.Services
 
             await _dataContext.Reviews.AddAsync(review);
             await _dataContext.SaveChangesAsync();
-
             return new ApiResult(review);
         }
         public async Task<ApiResult> Delete(int id)
