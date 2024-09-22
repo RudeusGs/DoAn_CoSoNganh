@@ -14,6 +14,7 @@ namespace DragonAcc.Infrastructure.Entities
         public string? StartPrice { get; set; }
         public string? CurrentPrice { get; set; }
         public DateTime? StartDateTime { get; set; }
+        public string? Image { get; set; }
         public string? TimeAuction { get; set; }
         public string? Status { get; set; }
         public int? Winner { get; set; }
