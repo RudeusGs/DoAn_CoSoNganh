@@ -141,7 +141,7 @@ namespace DragonAcc.Service.Services
                         var fileUpload = await UploadFile(newGameAccount.Id, model.File);
                         if (!string.IsNullOrEmpty(fileUpload))
                         {
-                            newGameAccount.Image = fileUpload;                           
+                            newGameAccount.Image = fileUpload;
                         }
                     }
                     await _dataContext.SaveChangesAsync();
@@ -155,7 +155,7 @@ namespace DragonAcc.Service.Services
                 }
             }
 
-            return new ()
+            return new()
             {
                 Message = "Tài khoản này đã tồn tại! Vui lòng nhập thêm tài khoản khác."
             };

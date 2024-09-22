@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,8 @@ namespace DragonAcc.Service.Models.Auction
     {
         public string? AuctionName { get; set; }
         public string? Prize { get; set; }
+        public IFormFile? File { get; set; }
+        public string? Image { get; set; }
         public string? StartPrice { get; set; }
         public string? CurrentPrice { get; set; }
         public DateTime? StartDateTime { get; set; }
