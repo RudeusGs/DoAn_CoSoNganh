@@ -10,4 +10,10 @@
     <ProjectReference Include="..\DragonAcc.Infrastructure\DragonAcc.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\OrderHistory\" />
+    <Folder Include="Models\TopRecharger\" />
+    <Folder Include="Models\TransactionDetail\" />
+  </ItemGroup>
+
 </Project>

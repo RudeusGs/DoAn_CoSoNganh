@@ -1,5 +1,4 @@
-﻿
-using DragonAcc.Infrastructure;
+﻿using DragonAcc.Infrastructure;
 using DragonAcc.Service;
 using DragonAcc.Service.Services;
 using Microsoft.OpenApi.Models;
