@@ -8,5 +8,7 @@ namespace DragonAcc.Service.Models.OrderHistory
 {
     public class AddOrderHistoryModel
     {
+        ///////////
+        ///////////
     }
 }
