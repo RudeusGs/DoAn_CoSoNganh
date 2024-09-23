@@ -112,7 +112,6 @@ namespace DragonAcc.Service.Services
                 using var tran = _dataContext.Database.BeginTransaction();
                 try
                 {
-                    // Kiểm tra xem có phải là xóa dịch vụ hay không
                     if (model.IsDelete == true)
                     {
                         gameService.DeleteDate = _now;
@@ -120,15 +119,11 @@ namespace DragonAcc.Service.Services
                         await tran.CommitAsync();
                         return new();
                     }
-
-                    // Nếu không có thông tin nào được cập nhật
                     if (string.IsNullOrEmpty(model.Description)
                         && string.IsNullOrEmpty(model.Price))
                     {
                         return new() { Message = "Không có thông tin nào được cập nhật" };
                     }
-
-                    // Kiểm tra nếu tên dịch vụ trùng lặp nhưng không phải là cùng một dịch vụ
                     var existingService = await _dataContext.GameServices
                         .FirstOrDefaultAsync(x => x.ServiceName == model.ServiceName && x.Id != gameService.Id);
 
@@ -137,13 +132,11 @@ namespace DragonAcc.Service.Services
                         return new() { Message = "Tên dịch vụ đã tồn tại" };
                     }
 
-                    // Cập nhật thông tin dịch vụ
                     gameService.Server = model.Server ?? gameService.Server;
                     gameService.Description = model.Description ?? gameService.Description;
                     gameService.Price = model.Price ?? gameService.Price;
                     gameService.UpdatedDate = _now;
 
-                    // Nếu không phải là xóa, thì đặt lại DeleteDate
                     if (model.IsDelete == false)
                     {
                         gameService.DeleteDate = null;

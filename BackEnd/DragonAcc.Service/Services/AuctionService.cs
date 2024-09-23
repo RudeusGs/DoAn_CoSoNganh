@@ -34,6 +34,7 @@ namespace DragonAcc.Service.Services
                         Prize = model.Prize,
                         AuctionName = model.AuctionName,
                         StartPrice = model.StartPrice,
+                        CurrentPrice = model.StartPrice,
                         StartDateTime = model.StartDateTime,
                         TimeAuction = timeAuction.ToString(@"hh\:mm\:ss"),
                         CreatedDate = DateTime.Now,
@@ -72,7 +73,7 @@ namespace DragonAcc.Service.Services
                     throw new Exception(e.Message);
                 }
             }
-            return new ApiResult() { Message = "Không tìm thấy đấu giá này." };
+            return new() { Message = "Không tìm thấy đấu giá này." };
         }
 
         public async Task<ApiResult> GetAll()
@@ -113,7 +114,7 @@ namespace DragonAcc.Service.Services
                     throw new Exception(e.Message);
                 }
             }
-            return new ApiResult() { Message = "Không tìm thấy phiên đấu giá này." };
+            return new() { Message = "Không tìm thấy phiên đấu giá này." };
         }
         public async Task<ApiResult> UpdateCurrentPrice(UpdateCurrentPriceModel model)
         {
@@ -121,19 +122,19 @@ namespace DragonAcc.Service.Services
 
             if (auction == null)
             {
-                return new ApiResult() { Message = "Không tìm thấy phiên đấu giá." };
+                return new() { Message = "Không tìm thấy phiên đấu giá." };
             }
             if (decimal.TryParse(model.CurrentPrice, out decimal newPrice))
             {
-                if (newPrice > decimal.Parse(auction.StartPrice))
+                if (newPrice > decimal.Parse(auction.CurrentPrice))
                 {
                     using var tran = await _dataContext.Database.BeginTransactionAsync();
                     try
                     {
-                        auction.StartPrice = newPrice.ToString();
+                        auction.CurrentPrice = newPrice.ToString();
                         await _dataContext.SaveChangesAsync();
                         await tran.CommitAsync();
-                        return new ApiResult() { Message = "Cập nhật giá thành công.", Data = auction };
+                        return new();
                     }
                     catch (Exception ex)
                     {
@@ -143,14 +144,16 @@ namespace DragonAcc.Service.Services
                 }
                 else
                 {
-                    return new ApiResult() { Message = "Giá đặt mới thấp hơn giá hiện tại." };
+                    return new() { Message = "Giá đặt mới thấp hơn giá hiện tại." };
                 }
             }
             else
             {
-                return new ApiResult() { Message = "Số tiền không hợp lệ." };
+                return new() { Message = "Số tiền không hợp lệ." };
             }
         }
+
+
 
     }
 }

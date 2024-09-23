@@ -93,7 +93,7 @@ namespace DragonAcc.Service.Services
                     FullName = model.FullName,
                     Coin = 0,
                     SecurityStamp = Guid.NewGuid().ToString(),
-                    Balance = model.Balance,
+                    Balance = "0",
                     
                 };
 
