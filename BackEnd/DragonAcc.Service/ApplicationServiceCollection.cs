@@ -38,6 +38,7 @@ namespace DragonAcc.Service
             services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<IAuctionService, AuctionService>();
             services.AddScoped<ILuckyWheelService, LuckyWheelService>();
+            services.AddScoped<IIngameItemService, InGameItemService>();
             #endregion
             return services;
         }
