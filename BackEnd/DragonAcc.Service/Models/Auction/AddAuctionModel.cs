@@ -17,5 +17,7 @@ namespace DragonAcc.Service.Models.Auction
         public string? CurrentPrice { get; set; }
         public DateTime? StartDateTime { get; set; }
         public string? TimeAuction { get; set; }
+        public string? Status { get; set; }
+        public int? Winner { get; set; }
     }
 }

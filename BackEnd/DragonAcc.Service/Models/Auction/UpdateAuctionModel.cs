@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,9 +9,10 @@ namespace DragonAcc.Service.Models.Auction
 {
     public class UpdateAuctionModel
     {
-        public int? InGameItemId { get; set; }
-        public int? GameAccountId { get; set; }
+        public int? Id { get; set; }
+        public string? Prize { get; set; }
         public string? AucionName { get; set; }
+        public IFormFile? File { get; set; }
         public string? StartPrice { get; set; }
         public DateTime? StartDateTime { get; set; }
         public string? TimeAuction { get; set; }

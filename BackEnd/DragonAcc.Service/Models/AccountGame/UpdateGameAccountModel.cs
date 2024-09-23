@@ -14,6 +14,5 @@ namespace DragonAcc.Service.Models.AccountGame
         public bool? Earring { get; set; }
         public string? Planet { get; set; }
         public int? Server { get; set; }
-        public bool? IsDelete { get; set; }
     }
 }

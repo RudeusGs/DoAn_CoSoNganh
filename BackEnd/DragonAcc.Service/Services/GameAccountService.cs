@@ -38,7 +38,6 @@ namespace DragonAcc.Service.Services
                 using var tran = await _dataContext.Database.BeginTransactionAsync();
                 try
                 {
-                    gameaccount.DeleteDate = _now;
                     _dataContext.GameAccounts.Remove(gameaccount);
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
@@ -173,50 +172,33 @@ namespace DragonAcc.Service.Services
         public async Task<ApiResult> Update(UpdateGameAccountModel model)
         {
             var gameAccount = await _dataContext.GameAccounts
-                             .FirstOrDefaultAsync(x => x.Id == model.Id);
+                                .FirstOrDefaultAsync(x => x.Id == model.Id);
+
             if (gameAccount != null)
             {
-                using var tran = _dataContext.Database.BeginTransaction();
+                using var tran = await _dataContext.Database.BeginTransactionAsync();
                 try
                 {
-                    if (model.IsDelete == true)
-                    {
-                        gameAccount.DeleteDate = _now;
-                        await _dataContext.SaveChangesAsync();
-                        await tran.CommitAsync();
-                        return new();
-                    }
-
-                    if (string.IsNullOrEmpty(model.AccountName)
-                        && string.IsNullOrEmpty(model.AccountPassword)
-                        && string.IsNullOrEmpty(model.Price)
-                        && model.File == null
-                        && string.IsNullOrEmpty(model.Status)
-                        && string.IsNullOrEmpty(model.Planet))
+                    if (string.IsNullOrEmpty(model.AccountName) &&
+                        string.IsNullOrEmpty(model.AccountPassword) &&
+                        string.IsNullOrEmpty(model.Price) &&
+                        string.IsNullOrEmpty(model.Status) &&
+                        model.File == null &&
+                        string.IsNullOrEmpty(model.Planet) &&
+                        model.Server == null &&
+                        model.Earring == null)
                     {
                         return new() { Message = "Không có thông tin nào được cập nhật" };
-                    }
-
-                    var findCate = await _dataContext.GameAccounts.Exist().FirstOrDefaultAsync(x =>
-                    !string.IsNullOrEmpty(model.AccountName) && x.AccountName == model.AccountName && x.Id != model.Id);
-                    if (findCate != null)
-                    {
-                        return new() { Message = "Error" };
                     }
 
                     gameAccount.AccountName = model.AccountName ?? gameAccount.AccountName;
                     gameAccount.AccountPassword = model.AccountPassword ?? gameAccount.AccountPassword;
                     gameAccount.Price = model.Price ?? gameAccount.Price;
-                    gameAccount.Earring = model.Earring ?? gameAccount.Earring;
-                    gameAccount.Planet = model.Planet ?? gameAccount.Planet;
                     gameAccount.Status = model.Status ?? gameAccount.Status;
+                    gameAccount.Planet = model.Planet ?? gameAccount.Planet;
                     gameAccount.Server = model.Server ?? gameAccount.Server;
+                    gameAccount.Earring = model.Earring ?? gameAccount.Earring;
                     gameAccount.UpdatedDate = _now;
-
-                    if (model.IsDelete == false)
-                    {
-                        gameAccount.DeleteDate = null;
-                    }
 
                     if (model.File != null)
                     {
@@ -226,12 +208,10 @@ namespace DragonAcc.Service.Services
                             gameAccount.Image = fileUpload;
                         }
                     }
-
-                    await _dataContext.SaveChangesAsync();
-
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
-                    return new();
+
+                    return new() { Message = "Cập nhật thành công!" };
                 }
                 catch (Exception e)
                 {
@@ -240,8 +220,9 @@ namespace DragonAcc.Service.Services
                 }
             }
 
-            return new() { Message = "Error" };
+            return new() { Message = "Không tìm thấy tài khoản game này." };
         }
+
 
     }
 }

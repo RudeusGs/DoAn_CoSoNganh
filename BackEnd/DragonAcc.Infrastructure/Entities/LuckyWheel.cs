@@ -14,7 +14,7 @@ namespace DragonAcc.Infrastructure.Entities
      */
     public class LuckyWheel : EntityBase
     {
-        public int? Prize { get; set; }
+        public string? Prize { get; set; }
         public float? Probability { get; set; }
         public string? Image { get; set; }
         public int? UserId { get; set; }
