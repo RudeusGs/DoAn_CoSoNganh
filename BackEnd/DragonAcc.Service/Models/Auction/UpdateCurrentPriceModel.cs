@@ -10,5 +10,6 @@ namespace DragonAcc.Service.Models.Auction
     {
         public int? Id { get; set; }
         public string? CurrentPrice { get; set; }
+        public int? Winner { get; set; }
     }
 }

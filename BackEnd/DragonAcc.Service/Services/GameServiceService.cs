@@ -16,8 +16,27 @@ namespace DragonAcc.Service.Services
     public class GameServiceService : BaseService, IGameServiceService
     {
 
-        public GameServiceService(DataContext dataContext,Common.IServices.IUserService userService) : base(dataContext, userService)
+        private readonly IFtpDirectoryService _ftpDirectoryService;
+
+        public GameServiceService(DataContext dataContext, IUserService userService, IFtpDirectoryService ftpDirectoryService) : base(dataContext, userService)
         {
+            _ftpDirectoryService = ftpDirectoryService;
+        }
+
+        private async Task<string?> UploadFile(int? gameServiceId, IFormFile? file)
+        {
+            if (file == null || !gameServiceId.HasValue)
+            {
+                return string.Empty;
+            }
+            var fileExt = Path.GetExtension(file.FileName);
+            var stream = file.OpenReadStream();
+            var result = await _ftpDirectoryService.TransferToFtpDirectoryAsync(stream, $"public/GameServices", $"{gameServiceId}{fileExt}");
+            if (result.Succeed)
+            {
+                return $"GameServices/{gameServiceId}{fileExt}";
+            }
+            return string.Empty;
         }
         public async Task<ApiResult> Add(GameService model)
         {
@@ -32,7 +51,6 @@ namespace DragonAcc.Service.Services
                 using var tran = await _dataContext.Database.BeginTransactionAsync();
                 try
                 {
-                    gameacservice.DeleteDate = _now;
                     _dataContext.GameServices.Remove(gameacservice);
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
@@ -75,13 +93,13 @@ namespace DragonAcc.Service.Services
         }
         public async Task<ApiResult> Add(AddGameServiceModel model)
         {
-            var result = await _dataContext.GameServices.FirstOrDefaultAsync(x => x.ServiceName == model.ServiceName);
-            if(result == null)
+            var existingGameService = await _dataContext.GameServices.FirstOrDefaultAsync(x => x.ServiceName == model.ServiceName);
+            if (existingGameService == null)
             {
-                using var tran = _dataContext.Database.BeginTransaction ();
+                using var tran = await _dataContext.Database.BeginTransactionAsync();
                 try
                 {
-                    var gameService = new GameService()
+                    var gameService = new GameService
                     {
                         Server = model.Server,
                         ServiceName = model.ServiceName,
@@ -91,7 +109,18 @@ namespace DragonAcc.Service.Services
                     };
                     _dataContext.GameServices.Add(gameService);
                     await _dataContext.SaveChangesAsync();
+                    if (model.File != null)
+                    {
+                        var fileUpload = await UploadFile(gameService.Id, model.File);
+                        if (!string.IsNullOrEmpty(fileUpload))
+                        {
+                            gameService.Image = fileUpload;
+                        }
+                    }
+
+                    await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
+
                     return new(gameService);
                 }
                 catch (Exception ex)
@@ -100,30 +129,18 @@ namespace DragonAcc.Service.Services
                     throw new Exception(ex.Message);
                 }
             }
-            return new() { Message = "Danh mục game này đã có" };
-        } 
+            return new() { Message = "Danh mục game này đã tồn tại" };
+        }
+
         public async Task<ApiResult> Update(UpdateGameServiceModel model)
         {
-            var gameService = await _dataContext.GameServices
-                               .FirstOrDefaultAsync(x => x.Id == model.Id);
+            var gameService = await _dataContext.GameServices.FirstOrDefaultAsync(x => x.Id == model.Id);
 
             if (gameService != null)
             {
-                using var tran = _dataContext.Database.BeginTransaction();
+                using var tran = await _dataContext.Database.BeginTransactionAsync();
                 try
                 {
-                    if (model.IsDelete == true)
-                    {
-                        gameService.DeleteDate = _now;
-                        await _dataContext.SaveChangesAsync();
-                        await tran.CommitAsync();
-                        return new();
-                    }
-                    if (string.IsNullOrEmpty(model.Description)
-                        && string.IsNullOrEmpty(model.Price))
-                    {
-                        return new() { Message = "Không có thông tin nào được cập nhật" };
-                    }
                     var existingService = await _dataContext.GameServices
                         .FirstOrDefaultAsync(x => x.ServiceName == model.ServiceName && x.Id != gameService.Id);
 
@@ -131,20 +148,23 @@ namespace DragonAcc.Service.Services
                     {
                         return new() { Message = "Tên dịch vụ đã tồn tại" };
                     }
-
                     gameService.Server = model.Server ?? gameService.Server;
+                    gameService.ServiceName = model.ServiceName ?? gameService.ServiceName;
                     gameService.Description = model.Description ?? gameService.Description;
                     gameService.Price = model.Price ?? gameService.Price;
                     gameService.UpdatedDate = _now;
-
-                    if (model.IsDelete == false)
+                    if (model.File != null)
                     {
-                        gameService.DeleteDate = null;
+                        var fileUpload = await UploadFile(gameService.Id, model.File);
+                        if (!string.IsNullOrEmpty(fileUpload))
+                        {
+                            gameService.Image = fileUpload;
+                        }
                     }
-
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
-                    return new();
+
+                    return new() { Message = "Cập nhật thành công!" };
                 }
                 catch (Exception e)
                 {
@@ -152,9 +172,9 @@ namespace DragonAcc.Service.Services
                     throw new Exception(e.Message);
                 }
             }
-
             return new() { Message = "Dịch vụ game này không tồn tại!" };
         }
+
 
     }
 }

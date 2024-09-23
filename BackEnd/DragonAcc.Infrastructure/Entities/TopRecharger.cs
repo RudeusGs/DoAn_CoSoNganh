@@ -14,7 +14,7 @@ namespace DragonAcc.Infrastructure.Entities
     public class TopRecharger : EntityBase
     {
         public int? UserId { get; set; }
-        public int? SellerId { get; set; }
         public string? TotalTransaction { get; set; }
+        public int? TransactionDetailId { get; set; }
     }
 }
