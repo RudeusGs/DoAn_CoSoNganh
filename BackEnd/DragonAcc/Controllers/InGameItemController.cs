@@ -41,11 +41,11 @@ namespace DragonAcc.Controllers
             }
         [Authorize]
         [HttpDelete("Delete")]
-        public async Task<IActionResult> Delete()
+        public async Task<IActionResult> Delete([FromQuery] int id)
         {
             try
             {
-                var result = await _ingameItem.Delete();
+                var result = await _ingameItem.Delete(id);
                 return Response(result);
             }
             catch (Exception e)

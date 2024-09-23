@@ -64,18 +64,82 @@ namespace DragonAcc.Service.Services
             return new() { Message = "Danh mục game này đã có" };
         }
 
+        public async Task<ApiResult> Update(InGameItem model)
+        {
+            var ingameitem = _dataContext.InGameItems.FirstOrDefault(x => x.Id == model.Id);
+            if (ingameitem != null) 
+            {
+                using var tran = _dataContext.Database.BeginTransaction();
+                try
+                {
+                    ingameitem.Server = model.Server;
+                    ingameitem.ItemName = model.ItemName;
+                    ingameitem.ItemDescription = model.ItemDescription;
+                    ingameitem.ItemPrice = model.ItemPrice;
+                    ingameitem.StarQ = model.StarQ;
+                    ingameitem.Quantity = model.Quantity;
+                    ingameitem.UpdatedDate = _now;
+                    await _dataContext.SaveChangesAsync();
+                    await tran.CommitAsync();
+                    return new();
+                }
+                catch(Exception e)
+                {
+                    await tran.RollbackAsync();
+                    throw new Exception(e.Message);
+                }
+            }
+            return new ApiResult() { Message = "Không Tại Vật Phẩm Này!" }; 
+            
+        }
+        public async Task<ApiResult> Delete(int id)
+        {
+            var ingameitem = await _dataContext.InGameItems.FirstOrDefaultAsync(x => x.Id == id);
+            if (ingameitem != null)
+            {
+                var tran = _dataContext.Database.BeginTransaction();
+                try
+                {
+                    ingameitem.DeleteDate = _now;
+                    _dataContext.InGameItems.Remove(ingameitem);
+                    await _dataContext.SaveChangesAsync();
+                    await tran.CommitAsync();
+                    return new();
+                }
+                catch (Exception e)
+                {
+                    await tran.RollbackAsync();
+                    throw new Exception(e.Message);
+                }
+            }
+            return new ApiResult() { Message = "Không Tìm Thấy Tài Khoản Này!" };
+        }
+
+        public async Task<ApiResult> Remove(int id)
+        {
+            var ingameitem = _dataContext.InGameItems.FirstOrDefault(x => x.Id == id);
+            if (ingameitem != null)
+            {
+                using var tran = _dataContext.Database.BeginTransaction();
+                try
+                {
+                    ingameitem.DeleteDate = _now;
+                    await _dataContext.SaveChangesAsync();
+                    await tran.CommitAsync();
+                    return new();
+                }
+                catch (Exception e)
+                {
+                    await tran.RollbackAsync();
+                    throw new Exception(e.Message);
+                }
+            }
+            return new ApiResult() { Message = "Sản Phẩm Này Không Tồn Tại!" };
+        }
+
         public Task<ApiResult> Update(AddInGameItemModel model)
         {
-
             throw new NotImplementedException();
         }
-        //public async Task<ApiResult> Delete(int id)
-        //{
-        //    var result = await _dataContext.InGameItems.FirstOrDefaultAsync(x => x.Id == id);
-        //    if (result != null)
-        //    {
-
-        //    }
-        //}
     }
 }
