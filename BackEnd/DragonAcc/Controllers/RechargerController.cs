@@ -37,7 +37,19 @@ namespace DragonAcc.Controllers
                 return Response(e.Message, 500);
             }
         }
-
+        [HttpGet("get-toprechager")]
+        public async Task<IActionResult> GetTopRecharger()
+        {
+            try
+            {
+                var result = await _rechargerService.GetTopRecharger();
+                return Response(result);
+            }
+            catch (Exception e)
+            {
+                return Response(e.Message, 500);
+            }
+        }
         [Authorize]
         [HttpPost("add")]
         public async Task<IActionResult> Add([FromForm] AddRechargerModel model)

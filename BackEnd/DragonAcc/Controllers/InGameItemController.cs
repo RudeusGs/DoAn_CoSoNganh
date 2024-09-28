@@ -54,23 +54,6 @@ namespace DragonAcc.Controllers
         [HttpDelete("Delete")]
         public async Task<IActionResult> Delete([FromQuery] int id)
         {
-            try
-            {
-                try
-                {
-                    var result = await _ingameItem.Update(model);
-                    return Response(result);
-                }
-                catch (Exception e)
-                {
-                    return Response(e.Message, 500);
-                }
-            }
-
-            [Authorize]
-            [HttpDelete("Delete")]
-            public async Task<IActionResult> Delete([FromQuery] int id)
-            {
                 try
                 {
                     var result = await _ingameItem.Delete(id);
@@ -80,7 +63,7 @@ namespace DragonAcc.Controllers
                 {
                     return Response(e.Message, 500);
                 }
-            }
+
         }
         [Authorize]
         [HttpPut("update")]
