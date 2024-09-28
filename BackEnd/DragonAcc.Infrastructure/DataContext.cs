@@ -13,7 +13,6 @@ namespace DragonAcc.Infrastructure
         }
 
         public virtual DbSet<Payment> Payments { get; set; }
-        public virtual DbSet<TopRecharger> TopRechargers { get; set; }
         public virtual DbSet<Review> Reviews { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
         public virtual DbSet<OrderHistory> OrderHistorys { get; set; }

@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <Folder Include="Models\OrderDetail\" />
-    <Folder Include="Models\Order\" />
     <Folder Include="Models\OrderHistory\" />
     <Folder Include="Models\TopRecharger\" />
   </ItemGroup>

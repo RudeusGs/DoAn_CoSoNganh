@@ -13,6 +13,7 @@ namespace DragonAcc.Service.Models.Auction
         public string? Prize { get; set; }
         public string? AucionName { get; set; }
         public IFormFile? File { get; set; }
+        public string? Image { get; set; }
         public string? StartPrice { get; set; }
         public DateTime? StartDateTime { get; set; }
         public string? TimeAuction { get; set; }

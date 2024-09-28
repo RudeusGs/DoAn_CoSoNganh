@@ -98,10 +98,10 @@ namespace DragonAcc.Service.Services
             }
             var fileExt = Path.GetExtension(file.FileName);
             var stream = file.OpenReadStream();
-            var result = await _ftpDirectoryService.TransferToFtpDirectoryAsync(stream, $"public/gameaccounts", $"{accountId}{fileExt}");
+            var result = await _ftpDirectoryService.TransferToFtpDirectoryAsync(stream, $"public/GameAccounts", $"{accountId}{fileExt}");
             if (result.Succeed)
             {
-                return $"gameaccounts/{accountId}{fileExt}";
+                return $"GameAccounts/{accountId}{fileExt}";
             }
             return string.Empty;
         }

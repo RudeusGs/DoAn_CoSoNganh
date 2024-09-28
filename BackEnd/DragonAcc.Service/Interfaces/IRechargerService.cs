@@ -9,5 +9,6 @@ namespace DragonAcc.Service.Interfaces
     {
         Task<ApiResult> Add(AddRechargerModel model);
         Task<ApiResult> Update(UpdateStatusRechargerModel model);
+        Task<ApiResult> GetTopRecharger();
     }
 }
