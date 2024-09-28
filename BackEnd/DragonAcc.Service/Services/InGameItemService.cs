@@ -3,8 +3,11 @@ using DragonAcc.Infrastructure.Entities;
 using DragonAcc.Service.Common.IServices;
 using DragonAcc.Service.Interfaces;
 using DragonAcc.Service.Models;
+using DragonAcc.Service.Models.GameService;
 using DragonAcc.Service.Models.InGameItem;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +18,28 @@ namespace DragonAcc.Service.Services
 {
     public class InGameItemService : BaseService, IIngameItemService
     {
-        public InGameItemService(DataContext dataContext, IUserService userService) : base(dataContext, userService)
-        {
-        }
+        private readonly IFtpDirectoryService _ftpDirectoryService;
 
+        public InGameItemService(DataContext dataContext, IUserService userService, IFtpDirectoryService ftpDirectoryService)
+            : base(dataContext, userService)
+        {
+            _ftpDirectoryService = ftpDirectoryService;
+        }
+        private async Task<string?> UploadFile(int? inGameItemId, IFormFile? file)
+        {
+            if (file == null || !inGameItemId.HasValue)
+            {
+                return string.Empty;
+            }
+            var fileExt = Path.GetExtension(file.FileName);
+            var stream = file.OpenReadStream();
+            var result = await _ftpDirectoryService.TransferToFtpDirectoryAsync(stream, $"public/InGameItem", $"{inGameItemId}{fileExt}");
+            if (result.Succeed)
+            {
+                return $"LuckyWheels/{inGameItemId}{fileExt}";
+            }
+            return string.Empty;
+        }
         public async Task<ApiResult> GetAll()
         {
             var result = await _dataContext.InGameItems.ToListAsync() ;
@@ -52,6 +73,17 @@ namespace DragonAcc.Service.Services
                     };
                     _dataContext.InGameItems.Add(InGameItem);
                     await _dataContext.SaveChangesAsync();
+
+                    if (model.File != null)
+                    {
+                        var fileUpload = await UploadFile(InGameItem.Id, model.File);
+                        if (!string.IsNullOrEmpty(fileUpload))
+                        {
+                            InGameItem.Image = fileUpload;
+                            await _dataContext.SaveChangesAsync();
+                        }
+                    }
+
                     await tran.CommitAsync();
                     return new(InGameItem);
                 }
@@ -61,36 +93,52 @@ namespace DragonAcc.Service.Services
                     throw new Exception(ex.Message);
                 }
             }
-            return new() { Message = "Danh mục game này đã có" };
+            return new() { Message = "Món đồ này đã có" };
         }
 
-        public async Task<ApiResult> Update(InGameItem model)
+        public async Task<ApiResult> Update(UpdateInGameItemModel model)
         {
-            var ingameitem = _dataContext.InGameItems.FirstOrDefault(x => x.Id == model.Id);
-            if (ingameitem != null) 
+            var inGameItem = await _dataContext.InGameItems.FirstOrDefaultAsync(x => x.Id == model.Id);
+
+            if (inGameItem != null)
             {
-                using var tran = _dataContext.Database.BeginTransaction();
+                using var tran = await _dataContext.Database.BeginTransactionAsync();
                 try
                 {
-                    ingameitem.Server = model.Server;
-                    ingameitem.ItemName = model.ItemName;
-                    ingameitem.ItemDescription = model.ItemDescription;
-                    ingameitem.ItemPrice = model.ItemPrice;
-                    ingameitem.StarQ = model.StarQ;
-                    ingameitem.Quantity = model.Quantity;
-                    ingameitem.UpdatedDate = _now;
+                    var existingService = await _dataContext.InGameItems
+                        .FirstOrDefaultAsync(x => x.ItemName == model.ItemName && x.Id != inGameItem.Id);
+
+                    if (existingService != null)
+                    {
+                        return new() { Message = "Tên đồ này đã tồn tại" };
+                    }
+                    inGameItem.ItemName = model.ItemName ?? inGameItem.ItemName;
+                    inGameItem.Server = model.Server ?? inGameItem.Server;
+                    inGameItem.StarQ = model.StarQ ?? inGameItem.StarQ;
+                    inGameItem.Quantity = model.StarQ ?? inGameItem.StarQ;
+                    inGameItem.ItemPrice = model.ItemPrice ?? inGameItem.ItemPrice;
+                    inGameItem.ItemDescription = model.ItemDescription ?? inGameItem.ItemDescription;
+                    inGameItem.UpdatedDate = _now;
+                    if (model.File != null)
+                    {
+                        var fileUpload = await UploadFile(inGameItem.Id, model.File);
+                        if (!string.IsNullOrEmpty(fileUpload))
+                        {
+                            inGameItem.Image = fileUpload;
+                        }
+                    }
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
-                    return new();
+
+                    return new() { Message = "Cập nhật thành công!" };
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     await tran.RollbackAsync();
                     throw new Exception(e.Message);
                 }
             }
-            return new ApiResult() { Message = "Không Tại Vật Phẩm Này!" }; 
-            
+            return new() { Message = "Món đồ này không tồn tại!" };
         }
         public async Task<ApiResult> Delete(int id)
         {
@@ -112,7 +160,7 @@ namespace DragonAcc.Service.Services
                     throw new Exception(e.Message);
                 }
             }
-            return new ApiResult() { Message = "Không Tìm Thấy Tài Khoản Này!" };
+            return new ApiResult() { Message = "Không tìm thấy món đồ này!" };
         }
 
         public async Task<ApiResult> Remove(int id)
@@ -134,10 +182,15 @@ namespace DragonAcc.Service.Services
                     throw new Exception(e.Message);
                 }
             }
-            return new ApiResult() { Message = "Sản Phẩm Này Không Tồn Tại!" };
+            return new ApiResult() { Message = "Món đồ này không tồn tại" };
         }
 
-        public Task<ApiResult> Update(AddInGameItemModel model)
+        public Task<ApiResult> Add(InGameItem model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ApiResult> Update(InGameItem model)
         {
             throw new NotImplementedException();
         }

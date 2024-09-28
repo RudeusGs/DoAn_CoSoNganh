@@ -10,9 +10,10 @@ using System.Threading.Tasks;
 
 namespace DragonAcc.Service.Interfaces
 {
-    public interface IIngameItemService : IServiceBase<AddInGameItemModel>
+    public interface IIngameItemService : IServiceBase<InGameItem>
     {
         public Task<ApiResult> Remove(int id);
-        public Task<ApiResult> Update(InGameItem model);
+        public Task<ApiResult> Add(AddInGameItemModel model);
+        public Task<ApiResult> Update(UpdateInGameItemModel model);
     }
 }
