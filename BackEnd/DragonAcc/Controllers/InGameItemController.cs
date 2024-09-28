@@ -1,6 +1,8 @@
 ﻿using DragonAcc.Infrastructure.Entities;
 using DragonAcc.Service.Interfaces;
+using DragonAcc.Service.Models.GameService;
 using DragonAcc.Service.Models.InGameItem;
+using DragonAcc.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,13 +19,20 @@ namespace DragonAcc.Controllers
             {
                 _ingameItem = ingameitem;
             }
-            [Authorize]
+
             [HttpGet("get-all")]
             public async Task<IActionResult> GetAll()
             {
                 var result = await _ingameItem.GetAll();
                 return Response(result);
             }
+            [HttpGet("get-by-id")]   
+            public async Task<IActionResult> GetById(int id)
+            {
+            var result = await _ingameItem.GetById(id);
+                return Response(result);
+            }
+            
 
             [Authorize]
             [HttpPost("add")]
@@ -39,19 +48,35 @@ namespace DragonAcc.Controllers
                     return Response(e.Message, 500);
                 }
             }
-        [Authorize]
-        [HttpDelete("Delete")]
-        public async Task<IActionResult> Delete([FromQuery] int id)
-        {
-            try
+
+            [Authorize]
+            [HttpPut("update")]
+            public async Task<IActionResult> Update([FromForm] UpdateInGameItemModel model)
             {
-                var result = await _ingameItem.Delete(id);
-                return Response(result);
+                try
+                {
+                    var result = await _ingameItem.Update(model);
+                    return Response(result);
+                }
+                catch (Exception e)
+                {
+                    return Response(e.Message, 500);
+                }
             }
-            catch (Exception e)
+
+            [Authorize]
+            [HttpDelete("Delete")]
+            public async Task<IActionResult> Delete([FromQuery] int id)
             {
-                return Response(e.Message, 500);
+                try
+                {
+                    var result = await _ingameItem.Delete(id);
+                    return Response(result);
+                }
+                catch (Exception e)
+                {
+                    return Response(e.Message, 500);
+                }
             }
-        }
     }
 }

@@ -1,5 +1,4 @@
-﻿
-namespace DragonAcc.Infrastructure.Constants
+﻿namespace DragonAcc.Infrastructure.Constants
 {
     public static class RoleConstants
     {

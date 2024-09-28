@@ -1,17 +1,11 @@
 ﻿using DragonAcc.Infrastructure;
 using DragonAcc.Infrastructure.Entities;
-using DragonAcc.Infrastructure.Extensions;
 using DragonAcc.Service.Common.IServices;
-using DragonAcc.Service.Common.Services;
 using DragonAcc.Service.Interfaces;
 using DragonAcc.Service.Models;
 using DragonAcc.Service.Models.AccountGame;
-using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Net.NetworkInformation;
-using System.Numerics;
 
 namespace DragonAcc.Service.Services
 {

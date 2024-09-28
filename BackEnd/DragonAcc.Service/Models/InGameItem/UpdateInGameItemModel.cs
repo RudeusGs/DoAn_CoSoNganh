@@ -1,9 +1,15 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace DragonAcc.Service.Models.InGameItem
 {
-    public class AddInGameItemModel
+    public class UpdateInGameItemModel
     {
+        public int? Id { get; set; }    
         public string? ItemName { get; set; }
         public string? ItemDescription { get; set; }
         public string? ItemPrice { get; set; }
