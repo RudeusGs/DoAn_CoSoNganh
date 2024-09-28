@@ -11,5 +11,7 @@ namespace DragonAcc.Service.Models.InGameItem
         public int? StarQ { get; set; }
         public string? Server { get; set; }
         public int? Quantity { get; set; }
+        public string? Image { get; set; }
+
     }
 }
