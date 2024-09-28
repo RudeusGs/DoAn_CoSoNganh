@@ -7,20 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Models\TransactionDetail\**" />
-    <EmbeddedResource Remove="Models\TransactionDetail\**" />
-    <None Remove="Models\TransactionDetail\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\DragonAcc.Infrastructure\DragonAcc.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\OrderDetail\" />
-    <Folder Include="Models\Order\" />
     <Folder Include="Models\OrderHistory\" />
     <Folder Include="Models\TopRecharger\" />
+    <Folder Include="Models\TransactionDetail\" />
   </ItemGroup>
 
 </Project>
