@@ -35,10 +35,7 @@ namespace DragonAcc.Service.Services
         {
             throw new NotImplementedException();
         }
-        /// <summary>
-        /// ///
-        /// </summary>
-        /// <returns></returns>
+
         public async Task<ApiResult> GetAll()
         {
             var result = await _dataContext.Reviews.ToListAsync();

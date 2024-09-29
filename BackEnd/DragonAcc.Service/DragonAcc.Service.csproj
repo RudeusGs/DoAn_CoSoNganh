@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\TopRecharger\**" />
     <Compile Remove="Models\TransactionDetail\**" />
+    <EmbeddedResource Remove="Models\TopRecharger\**" />
     <EmbeddedResource Remove="Models\TransactionDetail\**" />
+    <None Remove="Models\TopRecharger\**" />
     <None Remove="Models\TransactionDetail\**" />
   </ItemGroup>
 
@@ -17,10 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\OrderDetail\" />
-    <Folder Include="Models\Order\" />
     <Folder Include="Models\OrderHistory\" />
-    <Folder Include="Models\TopRecharger\" />
   </ItemGroup>
 
 </Project>

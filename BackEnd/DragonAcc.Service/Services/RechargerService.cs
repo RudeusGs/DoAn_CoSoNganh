@@ -5,12 +5,6 @@ using DragonAcc.Service.Interfaces;
 using DragonAcc.Service.Models;
 using DragonAcc.Service.Models.Recharger;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 
 namespace DragonAcc.Service.Services
 {
@@ -165,5 +159,33 @@ namespace DragonAcc.Service.Services
         {
             throw new NotImplementedException();
         }
+        public async Task<ApiResult> GetTopRecharger()
+        {
+            var topRecharger = await _dataContext.Rechargers
+                .Where(x => x.Status == "Thành công")
+                .GroupBy(x => new { x.UserId })
+                .Select(g => new
+                {
+                    UserId = g.Key.UserId,
+                    TotalAmount = g.Sum(x => Convert.ToDecimal(x.Amount))
+                })
+                .OrderByDescending(x => x.TotalAmount)
+                .FirstOrDefaultAsync();
+
+            if (topRecharger != null)
+            {
+                return new ApiResult
+                {
+                    Data = topRecharger,
+                    Message = "Lấy thông tin người nạp nhiều nhất thành công."
+                };
+            }
+
+            return new ApiResult
+            {
+                Message = "Không tìm thấy dữ liệu nào với trạng thái 'Thành công'."
+            };
+        }
+
     }
 }

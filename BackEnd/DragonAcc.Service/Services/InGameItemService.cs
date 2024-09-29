@@ -3,16 +3,10 @@ using DragonAcc.Infrastructure.Entities;
 using DragonAcc.Service.Common.IServices;
 using DragonAcc.Service.Interfaces;
 using DragonAcc.Service.Models;
-using DragonAcc.Service.Models.GameService;
 using DragonAcc.Service.Models.InGameItem;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace DragonAcc.Service.Services
 {
@@ -36,7 +30,7 @@ namespace DragonAcc.Service.Services
             var result = await _ftpDirectoryService.TransferToFtpDirectoryAsync(stream, $"public/InGameItem", $"{inGameItemId}{fileExt}");
             if (result.Succeed)
             {
-                return $"LuckyWheels/{inGameItemId}{fileExt}";
+                return $"InGameItem/{inGameItemId}{fileExt}";
             }
             return string.Empty;
         }

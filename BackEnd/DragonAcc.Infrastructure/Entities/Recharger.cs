@@ -11,5 +11,6 @@ namespace DragonAcc.Infrastructure.Entities
         public string? CardSeri { get; set; }
         public string? Status { get; set; }
         public int? UserId { get; set; }
+        public string? TopRecharge { get; set; }
     }
 }
