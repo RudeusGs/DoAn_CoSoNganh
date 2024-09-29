@@ -3,6 +3,8 @@ using DragonAcc.Infrastructure.Entities;
 using DragonAcc.Service.Common.IServices;
 using DragonAcc.Service.Interfaces;
 using DragonAcc.Service.Models;
+using DragonAcc.Service.Models.Notification;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,27 +19,103 @@ namespace DragonAcc.Service.Services
         {
         }
 
-        public Task<ApiResult> Add(Notification model)
+        public async Task<ApiResult> Add(AddNotificationModel model)
         {
-            throw new NotImplementedException();
+            var notificate = await _dataContext.Notifications.FirstOrDefaultAsync(x => x.Title == model.Title);
+            if (notificate == null)
+            {
+                using var tran = _dataContext.Database.BeginTransaction();
+                try
+                {
+                    var notification = new Notification()
+                    {
+                        Title = model.Title,
+                        Message = model.Message,
+                        CreatedDate = DateTime.Now,
+                    };
+                    _dataContext.Notifications.Add(notification);
+                    await _dataContext.SaveChangesAsync();
+                    await tran.CommitAsync();
+                    return new(model);
+                }
+                catch (Exception e)
+                {
+                    await tran.RollbackAsync();
+                    throw new Exception(e.Message);
+                }
+            }
+            return new ApiResult() { Message = "Notification này đã tồn tại" };
         }
 
-        public Task<ApiResult> Delete(int id)
+        public async Task<ApiResult> Delete(int id)
         {
-            throw new NotImplementedException();
+            var notificate = await _dataContext.Notifications.FirstOrDefaultAsync(x => x.Id == id);
+            if (notificate != null)
+            {
+                using var tran = _dataContext.Database.BeginTransaction();
+                try
+                {
+                    notificate.DeleteDate = _now;
+                    _dataContext.Notifications.Remove(notificate);
+                    await _dataContext.SaveChangesAsync();
+                    await tran.CommitAsync();
+                    return new();
+
+                }
+                catch (Exception e)
+                {
+                    await tran.RollbackAsync();
+                    throw new Exception(e.Message);
+
+                }
+            }
+
+            return new ApiResult() { Message = "Notification này không tồn tại" };
         }
 
-        public Task<ApiResult> GetAll()
+        public async Task<ApiResult> GetAll()
         {
-            throw new NotImplementedException();
+            var result = await _dataContext.Notifications.ToListAsync();
+            return new(result);
         }
 
-        public Task<ApiResult> GetById(int id)
+        public async Task<ApiResult> GetById(int id)
         {
-            throw new NotImplementedException();
+            var result = await _dataContext.Notifications.FirstOrDefaultAsync(x => x.Id == id);
+            return new(result);
+        }
+
+        public async Task<ApiResult> Update(UpdateNotificationModel model)
+        {
+            var notificate = await _dataContext.Notifications.FirstOrDefaultAsync(x => x.Id == model.Id);
+
+            if (notificate != null)
+            {
+                using var tran = await _dataContext.Database.BeginTransactionAsync();
+                try
+                {
+                    notificate.Title = model.Title ?? notificate.Title;
+                    notificate.Message = model.Message ?? notificate.Message;
+                    notificate.UpdatedDate = _now;
+                    await _dataContext.SaveChangesAsync();
+                    await tran.CommitAsync();
+
+                    return new() { Message = "Cập nhật thành công!" };
+                }
+                catch (Exception e)
+                {
+                    await tran.RollbackAsync();
+                    throw new Exception(e.Message);
+                }
+            }
+            return new() { Message = "Notification này không tồn tại!" };
         }
 
         public Task<ApiResult> Update(Notification model)
+        {
+            throw new NotImplementedException();
+        }
+        public Task<ApiResult> Add(Notification model)
         {
             throw new NotImplementedException();
         }

@@ -41,6 +41,7 @@ namespace DragonAcc.Service
             services.AddScoped<IIngameItemService, InGameItemService>();
             services.AddScoped<IPaymentService, PaymentService>();
             services.AddScoped<IRechargerService, RechargerService>();
+            services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderDetailService, OrderDetailService>();
             #endregion
