@@ -5,7 +5,7 @@ namespace DragonAcc.Service.Models.AccountGame
     public class UpdateGameAccountModel
     {
         public int Id { get; set; }
-        public IFormFile? File { get; set; }
+        public List<IFormFile>? Files { get; set; }
         public string? AccountName { get; set; }
         public string? AccountPassword { get; set; }
         public string? Image { get; set; }

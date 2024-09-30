@@ -90,21 +90,32 @@ namespace DragonAcc.Service.Services
             return new ApiResult() { Message = "Không tìm thấy tài khoản này." };
         }
 
-        private async Task<string?> UploadFile(int? accountId, IFormFile? file)
+        private async Task<List<string>> UploadFiles(int? accountId, List<IFormFile>? files)
         {
-            if (file == null || !accountId.HasValue)
+            var uploadedFilePaths = new List<string>();
+
+            if (files == null || !accountId.HasValue)
             {
-                return string.Empty;
+                return uploadedFilePaths;
             }
-            var fileExt = Path.GetExtension(file.FileName);
-            var stream = file.OpenReadStream();
-            var result = await _ftpDirectoryService.TransferToFtpDirectoryAsync(stream, $"public/GameAccounts", $"{accountId}{fileExt}");
-            if (result.Succeed)
+            var accountFolder = $"public/GameAccounts/{accountId}";
+
+            foreach (var file in files)
             {
-                return $"GameAccounts/{accountId}{fileExt}";
+                var fileExt = Path.GetExtension(file.FileName);
+                var stream = file.OpenReadStream();
+                var fileName = $"{Guid.NewGuid()}{fileExt}"; 
+                var result = await _ftpDirectoryService.TransferToFtpDirectoryAsync(stream, accountFolder, fileName);
+
+                if (result.Succeed)
+                {
+                    uploadedFilePaths.Add($"{accountFolder}/{fileName}");
+                }
             }
-            return string.Empty;
+
+            return uploadedFilePaths;
         }
+
         public async Task<ApiResult> Add(AddGameAccountModel model)
         {
             var gameAccount = await _dataContext.GameAccounts.FirstOrDefaultAsync(x => x.AccountName == model.AccountName);
@@ -129,14 +140,15 @@ namespace DragonAcc.Service.Services
                     _dataContext.GameAccounts.Add(newGameAccount);
                     await _dataContext.SaveChangesAsync();
 
-                    if (model.File != null)
+                    if (model.Files != null && model.Files.Any())
                     {
-                        var fileUpload = await UploadFile(newGameAccount.Id, model.File);
-                        if (!string.IsNullOrEmpty(fileUpload))
+                        var fileUploads = await UploadFiles(newGameAccount.Id, model.Files);
+                        if (fileUploads.Any())
                         {
-                            newGameAccount.Image = fileUpload;
+                            newGameAccount.Image = string.Join(";", fileUploads);
                         }
                     }
+
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
                     return new(newGameAccount);
@@ -154,6 +166,7 @@ namespace DragonAcc.Service.Services
             };
         }
 
+
         public async Task<ApiResult> GetAll2()
         {
             var result = await _dataContext.GameAccounts
@@ -165,26 +178,13 @@ namespace DragonAcc.Service.Services
 
         public async Task<ApiResult> Update(UpdateGameAccountModel model)
         {
-            var gameAccount = await _dataContext.GameAccounts
-                                .FirstOrDefaultAsync(x => x.Id == model.Id);
+            var gameAccount = await _dataContext.GameAccounts.FirstOrDefaultAsync(x => x.Id == model.Id);
 
             if (gameAccount != null)
             {
                 using var tran = await _dataContext.Database.BeginTransactionAsync();
                 try
                 {
-                    if (string.IsNullOrEmpty(model.AccountName) &&
-                        string.IsNullOrEmpty(model.AccountPassword) &&
-                        string.IsNullOrEmpty(model.Price) &&
-                        string.IsNullOrEmpty(model.Status) &&
-                        model.File == null &&
-                        string.IsNullOrEmpty(model.Planet) &&
-                        model.Server == null &&
-                        model.Earring == null)
-                    {
-                        return new() { Message = "Không có thông tin nào được cập nhật" };
-                    }
-
                     gameAccount.AccountName = model.AccountName ?? gameAccount.AccountName;
                     gameAccount.AccountPassword = model.AccountPassword ?? gameAccount.AccountPassword;
                     gameAccount.Price = model.Price ?? gameAccount.Price;
@@ -194,14 +194,15 @@ namespace DragonAcc.Service.Services
                     gameAccount.Earring = model.Earring ?? gameAccount.Earring;
                     gameAccount.UpdatedDate = _now;
 
-                    if (model.File != null)
+                    if (model.Files != null && model.Files.Any())
                     {
-                        var fileUpload = await UploadFile(gameAccount.Id, model.File);
-                        if (!string.IsNullOrEmpty(fileUpload))
+                        var fileUploads = await UploadFiles(gameAccount.Id, model.Files);
+                        if (fileUploads.Any())
                         {
-                            gameAccount.Image = fileUpload;
+                            gameAccount.Image = string.Join(";", fileUploads);
                         }
                     }
+
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
 
@@ -216,6 +217,7 @@ namespace DragonAcc.Service.Services
 
             return new() { Message = "Không tìm thấy tài khoản game này." };
         }
+
 
 
     }

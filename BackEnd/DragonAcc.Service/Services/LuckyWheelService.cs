@@ -19,20 +19,31 @@ namespace DragonAcc.Service.Services
             _ftpDirectoryService = ftpDirectoryService;
         }
 
-        private async Task<string?> UploadFile(int? luckyWheelId, IFormFile? file)
+        private async Task<List<string>> UploadFiles(int? luckyWheelId, IList<IFormFile>? files)
         {
-            if (file == null || !luckyWheelId.HasValue)
+            var uploadedFilePaths = new List<string>();
+
+            if (files == null || !luckyWheelId.HasValue)
             {
-                return string.Empty;
+                return uploadedFilePaths;
             }
-            var fileExt = Path.GetExtension(file.FileName);
-            var stream = file.OpenReadStream();
-            var result = await _ftpDirectoryService.TransferToFtpDirectoryAsync(stream, $"public/LuckyWheels", $"{luckyWheelId}{fileExt}");
-            if (result.Succeed)
+
+            var luckywheelFolder = $"public/LuckyWheels/{luckyWheelId}";
+
+            foreach (var file in files)
             {
-                return $"LuckyWheels/{luckyWheelId}{fileExt}";
+                var fileExt = Path.GetExtension(file.FileName);
+                var stream = file.OpenReadStream();
+                var fileName = $"{Guid.NewGuid()}{fileExt}";
+                var result = await _ftpDirectoryService.TransferToFtpDirectoryAsync(stream, luckywheelFolder, fileName);
+
+                if (result.Succeed)
+                {
+                    uploadedFilePaths.Add($"{luckywheelFolder}/{fileName}");
+                }
             }
-            return string.Empty;
+
+            return uploadedFilePaths;
         }
 
         public async Task<ApiResult> Add(AddLuckyWheelModel model)
@@ -54,13 +65,12 @@ namespace DragonAcc.Service.Services
                     _dataContext.LuckyWheels.Add(newLuckyWheel);
                     await _dataContext.SaveChangesAsync();
 
-                    if (model.File != null)
+                    if (model.Files != null && model.Files.Count > 0)
                     {
-                        var fileUpload = await UploadFile(newLuckyWheel.Id, model.File);
-                        if (!string.IsNullOrEmpty(fileUpload))
+                        var fileUploads = await UploadFiles(newLuckyWheel.Id, model.Files);
+                        if (fileUploads.Count > 0)
                         {
-                            newLuckyWheel.Image = fileUpload;
-                            await _dataContext.SaveChangesAsync();
+                            newLuckyWheel.Image = string.Join(",", fileUploads);
                         }
                     }
 
@@ -92,12 +102,12 @@ namespace DragonAcc.Service.Services
                 luckyWheel.Prize = model.Prize ?? luckyWheel.Prize;
                 luckyWheel.Probability = model.Probability ?? luckyWheel.Probability;
 
-                if (model.File != null)
+                if (model.Files != null && model.Files.Count > 0)
                 {
-                    var fileUpload = await UploadFile(luckyWheel.Id, model.File);
-                    if (!string.IsNullOrEmpty(fileUpload))
+                    var fileUploads = await UploadFiles(luckyWheel.Id, model.Files);
+                    if (fileUploads.Count > 0)
                     {
-                        luckyWheel.Image = fileUpload;
+                        luckyWheel.Image = string.Join(",", fileUploads);
                     }
                 }
 

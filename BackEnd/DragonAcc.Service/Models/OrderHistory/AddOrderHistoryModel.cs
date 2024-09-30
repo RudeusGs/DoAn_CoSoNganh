@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DragonAcc.Service.Models.OrderDetail;
 
 namespace DragonAcc.Service.Models.OrderHistory
 {
     public class AddOrderHistoryModel
     {
-        ///////////
-        ///////////
+        public int? UserId { get; set; }
+        public List<OrderDetailModel>? OrderDetails { get; set; }
     }
 }

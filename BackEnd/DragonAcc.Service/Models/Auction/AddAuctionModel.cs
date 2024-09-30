@@ -11,7 +11,7 @@ namespace DragonAcc.Service.Models.Auction
     {
         public string? AuctionName { get; set; }
         public string? Prize { get; set; }
-        public IFormFile? File { get; set; }
+        public List<IFormFile>? Files { get; set; }
         public string? Image { get; set; }
         public string? StartPrice { get; set; }
         public string? CurrentPrice { get; set; }
