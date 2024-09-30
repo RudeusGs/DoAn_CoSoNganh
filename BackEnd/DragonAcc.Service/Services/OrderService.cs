@@ -34,7 +34,7 @@ namespace DragonAcc.Service.Services
 
         public async Task<ApiResult> CreateNew(OrderModel model)
         {
-            if (model.OrderDetails == null || !model.OrderDetails.Any())
+            if (model.OrderDetails == null || model.OrderDetails.Count == 0)
             {
                 return new() { Message = "Không có sản phẩm nào được chọn" };
             }

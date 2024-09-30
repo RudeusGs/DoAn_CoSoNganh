@@ -46,7 +46,8 @@ namespace DragonAcc.Service.Services
                     LuckyWheelId = od.LuckyWheelId,
                     Quantity = od.Quantity,
                     UnitPrice = od.UnitPrice,
-                    TotalPrice = od.TotalPrice
+                    TotalPrice = od.TotalPrice,
+                    Created = od.CreatedDate
                 })
                 .ToListAsync();
 

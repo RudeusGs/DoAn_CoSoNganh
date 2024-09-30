@@ -18,7 +18,7 @@ namespace DragonAcc.Infrastructure.Entities
         public int? GameServiceId { get; set; }
         public int? InGameItemId { get; set; }
         public int? LuckyWheelId { get; set; }
-        public int? SellerWithdrawalId { get; set; }
         public int? UserId { get; set; }
+        public DateTime? Created { get; set; }
     }
 }

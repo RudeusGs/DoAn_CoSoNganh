@@ -1,48 +1,56 @@
 ﻿using DragonAcc.Infrastructure;
 using DragonAcc.Infrastructure.Entities;
 using DragonAcc.Service.Common.IServices;
-using DragonAcc.Service.Common.Services;
 using DragonAcc.Service.Interfaces;
 using DragonAcc.Service.Models;
 using DragonAcc.Service.Models.Auction;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace DragonAcc.Service.Services
 {
-
     public class AuctionService : BaseService, IAuctionService
     {
         private readonly IFtpDirectoryService _ftpDirectoryService;
-        public AuctionService(DataContext dataContext, IUserService userService, IFtpDirectoryService ftpDirectoryService) : base(dataContext, userService)
+
+        public AuctionService(DataContext dataContext, IUserService userService, IFtpDirectoryService ftpDirectoryService)
+            : base(dataContext, userService)
         {
-            _ftpDirectoryService = ftpDirectoryService; 
+            _ftpDirectoryService = ftpDirectoryService;
         }
 
-        public Task<ApiResult> Add(Auction model)
+        private async Task<List<string>> UploadFiles(int? auctionId, IList<IFormFile>? files)
         {
-            throw new NotImplementedException();
-        }
-        private async Task<string?> UploadFile(int? auctionId, IFormFile? file)
-        {
-            if (file == null || !auctionId.HasValue)
+            var uploadedFilePaths = new List<string>();
+
+            if (files == null || !auctionId.HasValue)
             {
-                return string.Empty;
+                return uploadedFilePaths;
             }
-            var fileExt = Path.GetExtension(file.FileName);
-            var stream = file.OpenReadStream();
-            var result = await _ftpDirectoryService.TransferToFtpDirectoryAsync(stream, $"public/Auctions", $"{auctionId}{fileExt}");
-            if (result.Succeed)
+
+            var auctionFolder = $"public/Auctions/{auctionId}";
+
+            foreach (var file in files)
             {
-                return $"Auctions/{auctionId}{fileExt}";
+                var fileExt = Path.GetExtension(file.FileName);
+                var stream = file.OpenReadStream();
+                var fileName = $"{Guid.NewGuid()}{fileExt}";
+                var result = await _ftpDirectoryService.TransferToFtpDirectoryAsync(stream, auctionFolder, fileName);
+
+                if (result.Succeed)
+                {
+                    uploadedFilePaths.Add($"{auctionFolder}/{fileName}");
+                }
             }
-            return string.Empty;
+
+            return uploadedFilePaths;
         }
+
+
         public async Task<ApiResult> Add(AddAuctionModel model)
         {
-            var auction = await _dataContext.Auctions.FirstOrDefaultAsync(x => x.AuctionName == model.AuctionName);
-            if(auction == null)
+            var existingAuction = await _dataContext.Auctions.FirstOrDefaultAsync(x => x.AuctionName == model.AuctionName);
+            if (existingAuction == null)
             {
                 using var tran = await _dataContext.Database.BeginTransactionAsync();
                 try
@@ -60,29 +68,33 @@ namespace DragonAcc.Service.Services
                         Winner = null,
                         CreatedDate = DateTime.Now,
                     };
+
                     _dataContext.Auctions.Add(newAuction);
                     await _dataContext.SaveChangesAsync();
 
-                    if (model.File != null)
+                    if (model.Files != null && model.Files.Count > 0)
                     {
-                        var fileUpload = await UploadFile(newAuction.Id, model.File);
-                        if (!string.IsNullOrEmpty(fileUpload))
+                        var fileUploads = await UploadFiles(newAuction.Id, model.Files);
+                        if (fileUploads.Count > 0)
                         {
-                            newAuction.Image = fileUpload;
+                            newAuction.Image = string.Join(",", fileUploads);
                         }
                     }
+
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
                     return new(newAuction);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     await tran.RollbackAsync();
                     throw new Exception(ex.Message);
                 }
             }
-            return new() { Message = "Phiên đấu giá này đã tồn tại" };
+
+            return new() { Message = "Phiên đấu giá này đã tồn tại." };
         }
+
 
         public async Task<ApiResult> Delete(int id)
         {
@@ -103,6 +115,7 @@ namespace DragonAcc.Service.Services
                     throw new Exception(e.Message);
                 }
             }
+
             return new() { Message = "Không tìm thấy đấu giá này." };
         }
 
@@ -112,20 +125,15 @@ namespace DragonAcc.Service.Services
             return new(result);
         }
 
-        public Task<ApiResult> GetById(int id)
+        public async Task<ApiResult> GetById(int id)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<ApiResult> Update(Auction model)
-        {
-            throw new NotImplementedException();
+            var auction = await _dataContext.Auctions.FirstOrDefaultAsync(x => x.Id == id);
+            return auction != null ? new(auction) : new() { Message = "Không tìm thấy đấu giá này." };
         }
 
         public async Task<ApiResult> Update(UpdateAuctionModel model)
         {
-            var auction = await _dataContext.Auctions
-                             .FirstOrDefaultAsync(x => x.Id == model.Id);
+            var auction = await _dataContext.Auctions.FirstOrDefaultAsync(x => x.Id == model.Id);
 
             if (auction != null)
             {
@@ -133,39 +141,41 @@ namespace DragonAcc.Service.Services
                 try
                 {
                     if (string.IsNullOrEmpty(model.AucionName) &&
-                        string.IsNullOrEmpty(model.StartPrice) &&
+                        model.StartPrice == null &&
                         model.StartDateTime == null &&
                         string.IsNullOrEmpty(model.TimeAuction) &&
-                        model.File == null &&
+                        (model.Files == null || model.Files.Count == 0) &&
                         model.Prize == null)
                     {
                         return new() { Message = "Không có thông tin nào được cập nhật" };
                     }
+
                     auction.AuctionName = model.AucionName ?? auction.AuctionName;
                     auction.Prize = model.Prize ?? auction.Prize;
                     auction.StartPrice = model.StartPrice ?? auction.StartPrice;
                     auction.StartDateTime = model.StartDateTime ?? auction.StartDateTime;
-                    auction.CurrentPrice = model.StartPrice ?? auction.StartPrice;
-                    auction.TimeAuction = model.TimeAuction ?? auction.TimeAuction;           
+                    auction.CurrentPrice = model.StartPrice ?? auction.CurrentPrice;
+                    auction.TimeAuction = model.TimeAuction ?? auction.TimeAuction;
                     auction.UpdatedDate = _now;
 
-                    if (model.File != null)
+                    if (model.Files != null && model.Files.Count > 0)
                     {
-                        var fileUpload = await UploadFile(auction.Id, model.File);
-                        if (!string.IsNullOrEmpty(fileUpload))
+                        var fileUploads = await UploadFiles(auction.Id, model.Files);
+                        if (fileUploads.Count > 0)
                         {
-                            auction.Image = fileUpload;
+                            auction.Image = string.Join(",", fileUploads); 
                         }
                     }
+
                     await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
-
                     return new() { Message = "Cập nhật thành công!" };
                 }
                 catch (Exception e)
                 {
                     await tran.RollbackAsync();
                     throw new Exception(e.Message);
+
                 }
             }
 
@@ -180,6 +190,7 @@ namespace DragonAcc.Service.Services
             {
                 return new() { Message = "Không tìm thấy phiên đấu giá." };
             }
+
             if (decimal.TryParse(model.CurrentPrice, out decimal newPrice))
             {
                 if (newPrice > decimal.Parse(auction.CurrentPrice))
@@ -191,7 +202,7 @@ namespace DragonAcc.Service.Services
                         auction.CurrentPrice = newPrice.ToString();
                         await _dataContext.SaveChangesAsync();
                         await tran.CommitAsync();
-                        return new();
+                        return new() { Message = "Giá hiện tại được cập nhật thành công." };
                     }
                     catch (Exception ex)
                     {
@@ -204,13 +215,18 @@ namespace DragonAcc.Service.Services
                     return new() { Message = "Giá đặt mới thấp hơn giá hiện tại." };
                 }
             }
-            else
-            {
-                return new() { Message = "Số tiền không hợp lệ." };
-            }
+
+            return new() { Message = "Số tiền không hợp lệ." };
         }
 
+        public Task<ApiResult> Add(Auction model)
+        {
+            throw new NotImplementedException();
+        }
 
-
+        public Task<ApiResult> Update(Auction model)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

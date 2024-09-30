@@ -19,20 +19,31 @@ namespace DragonAcc.Service.Services
         {
             _ftpDirectoryService = ftpDirectoryService;
         }
-        private async Task<string?> UploadFile(int? inGameItemId, IFormFile? file)
+        private async Task<List<string>> UploadFiles(int? ingameitemId, IList<IFormFile>? files)
         {
-            if (file == null || !inGameItemId.HasValue)
+            var uploadedFilePaths = new List<string>();
+
+            if (files == null || !ingameitemId.HasValue)
             {
-                return string.Empty;
+                return uploadedFilePaths;
             }
-            var fileExt = Path.GetExtension(file.FileName);
-            var stream = file.OpenReadStream();
-            var result = await _ftpDirectoryService.TransferToFtpDirectoryAsync(stream, $"public/InGameItem", $"{inGameItemId}{fileExt}");
-            if (result.Succeed)
+
+            var ingameitemFolder = $"public/InGameItems/{ingameitemId}";
+
+            foreach (var file in files)
             {
-                return $"InGameItem/{inGameItemId}{fileExt}";
+                var fileExt = Path.GetExtension(file.FileName);
+                var stream = file.OpenReadStream();
+                var fileName = $"{Guid.NewGuid()}{fileExt}";
+                var result = await _ftpDirectoryService.TransferToFtpDirectoryAsync(stream, ingameitemFolder, fileName);
+
+                if (result.Succeed)
+                {
+                    uploadedFilePaths.Add($"{ingameitemFolder}/{fileName}");
+                }
             }
-            return string.Empty;
+
+            return uploadedFilePaths;
         }
         public async Task<ApiResult> GetAll()
         {
@@ -68,13 +79,12 @@ namespace DragonAcc.Service.Services
                     _dataContext.InGameItems.Add(InGameItem);
                     await _dataContext.SaveChangesAsync();
 
-                    if (model.File != null)
+                    if (model.Files != null && model.Files.Count > 0)
                     {
-                        var fileUpload = await UploadFile(InGameItem.Id, model.File);
-                        if (!string.IsNullOrEmpty(fileUpload))
+                        var fileUploads = await UploadFiles(InGameItem.Id, model.Files);
+                        if (fileUploads.Count > 0)
                         {
-                            InGameItem.Image = fileUpload;
-                            await _dataContext.SaveChangesAsync();
+                            InGameItem.Image = string.Join(",", fileUploads);
                         }
                     }
 
@@ -113,12 +123,12 @@ namespace DragonAcc.Service.Services
                     inGameItem.ItemPrice = model.ItemPrice ?? inGameItem.ItemPrice;
                     inGameItem.ItemDescription = model.ItemDescription ?? inGameItem.ItemDescription;
                     inGameItem.UpdatedDate = _now;
-                    if (model.File != null)
+                    if (model.Files != null && model.Files.Count > 0)
                     {
-                        var fileUpload = await UploadFile(inGameItem.Id, model.File);
-                        if (!string.IsNullOrEmpty(fileUpload))
+                        var fileUploads = await UploadFiles(inGameItem.Id, model.Files);
+                        if (fileUploads.Count > 0)
                         {
-                            inGameItem.Image = fileUpload;
+                            inGameItem.Image = string.Join(",", fileUploads);
                         }
                     }
                     await _dataContext.SaveChangesAsync();
