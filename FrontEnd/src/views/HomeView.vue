@@ -65,7 +65,6 @@
             text: "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae voluptate repellendus magni illo ea animi?",
             image: "https://res.cloudinary.com/muhammederdem/image/upload/v1535759872/kuldar-kalvik-799168-unsplash.jpg",
           },
-          // Các item khác...
         ],
       };
     },
@@ -85,7 +84,7 @@
   }
   
   .container {
-    max-width: 1200px; /* Đặt chiều rộng tối đa cho container */
+    max-width: 1200px;
     margin: 0 auto;
   }
   
@@ -106,6 +105,7 @@
   
   .preview-card__img {
     border-radius: 15px 15px 0 0;
+    margin: 10px 10px 10px 10px;
   }
   
   .preview-card__img img {
