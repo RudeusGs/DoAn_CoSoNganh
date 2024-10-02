@@ -185,4 +185,58 @@ select:focus {
 .valid-feedback {
     color: #2acc80;
 }
+@media (max-width: 1200px) {
+    .form-content {
+        min-width: 80%;
+    }
+}
+
+@media (max-width: 992px) {
+    .form-content {
+        min-width: 90%;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-content {
+        padding: 40px;
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    html, body {
+        overflow: auto;
+    }
+
+    .form-content {
+        padding: 30px;
+        min-width: 100%;
+    }
+
+    h3 {
+        font-size: 24px;
+    }
+
+    p {
+        font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .btn-primary {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    .form-body {
+        padding: 10px;
+    }
+}
 </style>

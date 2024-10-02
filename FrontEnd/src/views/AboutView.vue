@@ -86,7 +86,9 @@
     </section>
     
 </template>
-<script lang="ts"></script>
+<script lang="ts">
+
+</script>
 <style scoped>
 h1, h2, h3, h4, h5, h6 {
     color: #2c3145;

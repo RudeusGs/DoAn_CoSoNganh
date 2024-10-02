@@ -1,67 +1,100 @@
 <template>
-    <nav class="navbar navbar-expand-md bg-body-tertiary">
-        <div class="container-xl">
+  <nav class="navbar navbar-expand-md bg-body-tertiary">
+      <div class="container-xl">
           <a class="navbar-brand" href="#">
-            <img src="/public/LogoWebsite.png" alt="">
+              <img src="/public/LogoWebsite.png" alt="">
           </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+              <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/about">About</a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Payin
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Phone Card</a></li>
-                  <li><a class="dropdown-item" href="#">Banking</a></li>
-                </ul>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Category
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="#">Add Account</a></li>
-                  <li><a class="dropdown-item" href="#">Add Item</a></li>
-                  <li><a class="dropdown-item" href="#">Buy Account</a></li>
-                  <li><a class="dropdown-item" href="#">Buy Item</a></li>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link">Auction</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link">LuckyWheel</a>
-              </li>
-            </ul>
-            <div class="search-and-icons">
-              <form class="d-flex mb-2 me-2" role="search">
-                <input class="form-control me-2" type="search" aria-label="Search">
-              </form>
-              <div class="user-icons d-flex mb-2">                
-                <div class="wishlist"><i class="bi bi-bell"></i></div>
-                <div class="cart"><i class="bi bi-heart"></i></div>
-                <a class="profile text-black" href="/login"><i class="bi bi-person"></i></a>
+              <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                      <a class="nav-link active" aria-current="page" href="/">Home</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/about">About</a>
+                  </li>
+                  <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Payin
+                      </a>
+                      <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="/phonecard">Phone Card</a></li>
+                          <li><a class="dropdown-item" href="#">Banking</a></li>
+                      </ul>
+                  </li>
+                  <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Category
+                      </a>
+                      <ul class="dropdown-menu">
+                          <li><a class="dropdown-item" href="/addaccount">Add Account</a></li>
+                          <li><a class="dropdown-item" href="#">Add Item</a></li>
+                          <li><a class="dropdown-item" href="#">Buy Account</a></li>
+                          <li><a class="dropdown-item" href="#">Buy Item</a></li>
+                      </ul>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link">Auction</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/luckywheel">LuckyWheel</a>
+                  </li>
+              </ul>
+              <div class="search-and-icons">
+                  <form class="d-flex mb-2 me-2" role="search">
+                      <input class="form-control me-2" type="search" aria-label="Search">
+                  </form>
+                  <div class="user-icons d-flex mb-2">
+                      <div class="wishlist position-relative">
+                          <i class="bi bi-bell" id="notificationIcon"></i>
+                          <div class="wishlist position-relative">
+                              <div class="dropdown-menu p-3" id="notificationDropdown">
+                                  <h6 class="dropdown-header">Thông báo</h6>
+                                  <div class="notification-item">Thông báo 1</div>
+                                  <div class="notification-item">Thông báo 2</div>
+                                  <div class="notification-item">Thông báo 3</div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="cart"><i class="bi bi-heart"></i></div>
+                      <a class="profile text-black" href="/login"><i class="bi bi-person"></i></a>
+                  </div>
               </div>
-            </div>
-            <div class="contact-info d-md-flex">
-              <p>+84 392822440 | github.com/RudeusGs/DoAn_CoSoNganh </p>
-            </div>
+              <div class="contact-info d-md-flex">
+                  <p>+84 392822440 | github.com/RudeusGs/DoAn_CoSoNganh</p>
+              </div>
           </div>
-        </div>
-      </nav>
-    
+      </div>
+  </nav>
 </template>
 
-<script lang="js">
+
+<script lang="ts">
+  document.addEventListener("DOMContentLoaded", () => {
+    const notificationIcon = document.getElementById("notificationIcon");
+    const notificationDropdown = document.getElementById("notificationDropdown");
+
+    if (notificationIcon && notificationDropdown) {
+        notificationIcon.addEventListener("click", () => {
+            // Toggle visibility of the dropdown
+            if (notificationDropdown.style.display === "none" || notificationDropdown.style.display === "") {
+                notificationDropdown.style.display = "block";
+            } else {
+                notificationDropdown.style.display = "none";
+            }
+        });
+
+        // Close dropdown when clicking outside of it
+        document.addEventListener("click", (event: MouseEvent) => {
+            const target = event.target as HTMLElement;
+            if (!target.closest(".wishlist") && !target.closest("#notificationDropdown")) {
+                notificationDropdown.style.display = "none";
+            }
+        });
+    }
+});
 
 </script>
 
@@ -126,5 +159,47 @@
   .contact-info a {
     padding-right: 0;
   }
-  
+  #notificationDropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 600px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Kiểu dáng cho các mục thông báo */
+.notification-item {
+    padding: 10px;
+    border-bottom: 1px solid #f1f1f1;
+    cursor: pointer;
+}
+
+.notification-item:hover {
+    background-color: #f9f9f9;
+}
+
+/* Responsive khi màn hình nhỏ hơn 576px (dành cho thiết bị di động) */
+@media (max-width: 576px) {
+    #notificationDropdown {
+        width: 100vw; /* Chiều rộng menu chiếm 100% chiều rộng màn hình */
+        right: 0;     /* Đảm bảo menu vẫn dính vào bên phải */
+        left: 0;      /* Căn giữa theo chiều ngang */
+    }
+}
+
+/* Responsive cho màn hình nhỏ hơn 768px (máy tính bảng nhỏ) */
+@media (max-width: 768px) {
+    #notificationDropdown {
+        width: 100%; /* Menu chiếm hết chiều ngang của màn hình khi ở kích thước này */
+        left: 0;     /* Đảm bảo menu nằm giữa */
+        right: 0;
+    }
+}
+
+
 </style>

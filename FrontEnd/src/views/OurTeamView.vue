@@ -13,7 +13,7 @@
                     <div class="col-md-4 single-item">
                         <div class="item">
                             <div class="thumb">
-                                <img class="img-fluid d-flex justify-content-center" style="height: 477px; width: 417px" src="../assets/AVTNgoc.png" alt="Thumb">
+                                <img class="img-fluid d-flex justify-content-center" src="../assets/AVTNgoc.png" alt="Thumb">
                                 <div class="overlay">
                                     <h4>Harem</h4>
                                     <p>
@@ -41,15 +41,15 @@
                                 <span class="message">
                                     <a href="#"><i class="fas fa-envelope-open"></i></a>
                                 </span>
-                                <h4>Lorem Ipsum</h4>
-                                <span>Project Manager</span>
+                                <h4>Nguyễn Văn Bảo Ngọc</h4>
+                                <span>FullStack Dev</span>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4 single-item">
                         <div class="item">
                             <div class="thumb">
-                                <img class="img-fluid" src="https://i.ibb.co/JC4skS0/team-animate.jpg" alt="Thumb">
+                                <img class="img-fluid" src="../assets/AVTQuan.jpg" alt="Thumb">
                                 <div class="overlay">
                                     <h4>Lorem Ipsum</h4>
                                     <p>
@@ -77,15 +77,15 @@
                                 <span class="message">
                                     <a href="#"><i class="fas fa-envelope-open"></i></a>
                                 </span>
-                                <h4>Lorem Ipsum</h4>
-                                <span>App Developer</span>
+                                <h4>Ngô Trần Nguyên Quân</h4>
+                                <span>Project-Manager</span>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-4 single-item">
                         <div class="item">
                             <div class="thumb">
-                                <img class="img-fluid" src="https://i.ibb.co/JC4skS0/team-animate.jpg" alt="Thumb">
+                                <img class="img-fluid" src="../assets/AVTNhan.jpg" alt="Thumb">
                                 <div class="overlay">
                                     <h4>Lorem Ipsum</h4>
                                     <p>
@@ -113,7 +113,7 @@
                                 <span class="message">
                                     <a href="#"><i class="fas fa-envelope-open"></i></a>
                                 </span>
-                                <h4>Lorem Ipsum</h4>
+                                <h4>Lê Nhật Nhân</h4>
                                 <span>Web designer</span>
                             </div>
                         </div>
@@ -125,9 +125,6 @@
 <style scoped>
 body {
     Background-image: url(https://cdnb.artstation.com/p/assets/images/images/003/704/285/large/dusica-neskovic-muzejdanfinal.jpg?1476637309);
-}
-
-h1, h2, h3, h4, h5, h6 {
 }
 section {
   padding: 60px 0;

@@ -6,10 +6,10 @@
                     <div class="information">
                         <h6 class="footer-heading text-uppercase text-black fw-bold">Information</h6>
                         <ul class="list-unstyled footer-link mt-4">
-                            <li class="mb-1"><a href="https://codepen.io/Gaurav-Rana-the-reactor" class="text-black text-decoration-none fw-semibold">Events</a></li>
+                            <li class="mb-1"><a href="" class="text-black text-decoration-none fw-semibold">Events</a></li>
                             <li class="mb-1"><a href="/ourteam" class="text-black text-decoration-none fw-semibold">Our Team</a></li>
-                            <li class="mb-1"><a href="https://codepen.io/Gaurav-Rana-the-reactor" class="text-black text-decoration-none fw-semibold">Upcoming Sale</a></li>
-                            <li class=""><a href="https://codepen.io/Gaurav-Rana-the-reactor" class="text-black text-decoration-none fw-semibold">New Launches</a></li>
+                            <li class="mb-1"><a href="" class="text-black text-decoration-none fw-semibold">Upcoming Sale</a></li>
+                            <li class=""><a href="" class="text-black text-decoration-none fw-semibold">New Launches</a></li>
                         </ul>
                     </div>
                 </div>
@@ -17,10 +17,10 @@
                     <div class="resources">
                         <h6 class="footer-heading text-uppercase text-black fw-bold">Resources</h6>
                         <ul class="list-unstyled footer-link mt-4">
-                            <li class="mb-1"><a href="https://codepen.io/Gaurav-Rana-the-reactor" class="text-black text-decoration-none fw-semibold">API</a></li>
-                            <li class="mb-1"><a href="https://codepen.io/Gaurav-Rana-the-reactor" class="text-black text-decoration-none fw-semibold">Website Tutorials</a></li>
-                            <li class="mb-1"><a href="https://codepen.io/Gaurav-Rana-the-reactor" class="text-black text-decoration-none fw-semibold">Third Party</a></li>
-                            <li class=""><a href="https://codepen.io/Gaurav-Rana-the-reactor" class="text-black text-decoration-none fw-semibold">Video Lectures</a></li>
+                            <li class="mb-1"><a href="" class="text-black text-decoration-none fw-semibold">API</a></li>
+                            <li class="mb-1"><a href="" class="text-black text-decoration-none fw-semibold">Website Tutorials</a></li>
+                            <li class="mb-1"><a href="" class="text-black text-decoration-none fw-semibold">Third Party</a></li>
+                            <li class=""><a href="" class="text-black text-decoration-none fw-semibold">Video Lectures</a></li>
                         </ul>
                     </div>
                 </div>
