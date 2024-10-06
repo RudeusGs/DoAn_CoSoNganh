@@ -19,27 +19,30 @@ namespace DragonAcc.Service.Services
             _ftpDirectoryService = ftpDirectoryService;
         }
 
-        private async Task<List<string>> UploadFiles(int? luckyWheelId, IList<IFormFile>? files)
+        private async Task<List<string>> UploadFiles(int? accountId, List<IFormFile>? files)
         {
             var uploadedFilePaths = new List<string>();
 
-            if (files == null || !luckyWheelId.HasValue)
+            if (files == null || !accountId.HasValue)
             {
                 return uploadedFilePaths;
             }
 
-            var luckywheelFolder = $"public/LuckyWheels/{luckyWheelId}";
+            var accountFolder = $"public/GameAccounts/{accountId}";
 
             foreach (var file in files)
             {
                 var fileExt = Path.GetExtension(file.FileName);
                 var stream = file.OpenReadStream();
-                var fileName = $"{Guid.NewGuid()}{fileExt}";
-                var result = await _ftpDirectoryService.TransferToFtpDirectoryAsync(stream, luckywheelFolder, fileName);
+
+
+                var fileName = $"{accountId}.{uploadedFilePaths.Count + 1}{fileExt}";
+
+                var result = await _ftpDirectoryService.TransferToFtpDirectoryAsync(stream, accountFolder, fileName);
 
                 if (result.Succeed)
                 {
-                    uploadedFilePaths.Add($"{luckywheelFolder}/{fileName}");
+                    uploadedFilePaths.Add($"{accountFolder}/{fileName}");
                 }
             }
 
