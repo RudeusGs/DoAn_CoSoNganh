@@ -98,13 +98,17 @@ namespace DragonAcc.Service.Services
             {
                 return uploadedFilePaths;
             }
+
             var accountFolder = $"public/GameAccounts/{accountId}";
 
             foreach (var file in files)
             {
                 var fileExt = Path.GetExtension(file.FileName);
                 var stream = file.OpenReadStream();
-                var fileName = $"{Guid.NewGuid()}{fileExt}"; 
+
+
+                var fileName = $"{accountId}.{uploadedFilePaths.Count + 1}{fileExt}";
+
                 var result = await _ftpDirectoryService.TransferToFtpDirectoryAsync(stream, accountFolder, fileName);
 
                 if (result.Succeed)
@@ -115,6 +119,7 @@ namespace DragonAcc.Service.Services
 
             return uploadedFilePaths;
         }
+
 
         public async Task<ApiResult> Add(AddGameAccountModel model)
         {
