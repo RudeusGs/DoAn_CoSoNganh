@@ -44,6 +44,7 @@ namespace DragonAcc.Service
             services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderDetailService, OrderDetailService>();
+            services.AddScoped<IDailyCheckInService, DailyCheckInService>();
             #endregion
             return services;
         }
