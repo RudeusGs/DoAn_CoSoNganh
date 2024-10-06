@@ -7,6 +7,7 @@ import OurTeamView from '@/views/OurTeamView.vue';
 import PhoneCardView from '@/views/PhoneCardView.vue';
 import LuckyWheelView from '@/views/LuckyWheelView.vue';
 import AddAccountView from '@/views/AddAccountView.vue';
+import AuctionView from '@/views/AuctionView.vue';
 import { userStore } from '../stores/auth';
 
 const routes = [
@@ -49,6 +50,11 @@ const routes = [
     path: '/addaccount',
     name: 'addaccount',
     component: AddAccountView
+  },
+  {
+    path: '/auction',
+    name: 'auction',
+    component: AuctionView
   },
 ];
 

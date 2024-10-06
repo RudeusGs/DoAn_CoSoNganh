@@ -36,7 +36,7 @@
                       </ul>
                   </li>
                   <li class="nav-item">
-                      <a class="nav-link">Auction</a>
+                      <a class="nav-link" href="/auction">Auction</a>
                   </li>
                   <li class="nav-item">
                       <a class="nav-link" href="/luckywheel">LuckyWheel</a>
@@ -78,15 +78,12 @@
 
     if (notificationIcon && notificationDropdown) {
         notificationIcon.addEventListener("click", () => {
-            // Toggle visibility of the dropdown
             if (notificationDropdown.style.display === "none" || notificationDropdown.style.display === "") {
                 notificationDropdown.style.display = "block";
             } else {
                 notificationDropdown.style.display = "none";
             }
         });
-
-        // Close dropdown when clicking outside of it
         document.addEventListener("click", (event: MouseEvent) => {
             const target = event.target as HTMLElement;
             if (!target.closest(".wishlist") && !target.closest("#notificationDropdown")) {
