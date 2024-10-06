@@ -19,27 +19,30 @@ namespace DragonAcc.Service.Services
             _ftpDirectoryService = ftpDirectoryService;
         }
 
-        private async Task<List<string>> UploadFiles(int? auctionId, IList<IFormFile>? files)
+        private async Task<List<string>> UploadFiles(int? accountId, List<IFormFile>? files)
         {
             var uploadedFilePaths = new List<string>();
 
-            if (files == null || !auctionId.HasValue)
+            if (files == null || !accountId.HasValue)
             {
                 return uploadedFilePaths;
             }
 
-            var auctionFolder = $"public/Auctions/{auctionId}";
+            var accountFolder = $"public/GameAccounts/{accountId}";
 
             foreach (var file in files)
             {
                 var fileExt = Path.GetExtension(file.FileName);
                 var stream = file.OpenReadStream();
-                var fileName = $"{Guid.NewGuid()}{fileExt}";
-                var result = await _ftpDirectoryService.TransferToFtpDirectoryAsync(stream, auctionFolder, fileName);
+
+
+                var fileName = $"{accountId}.{uploadedFilePaths.Count + 1}{fileExt}";
+
+                var result = await _ftpDirectoryService.TransferToFtpDirectoryAsync(stream, accountFolder, fileName);
 
                 if (result.Succeed)
                 {
-                    uploadedFilePaths.Add($"{auctionFolder}/{fileName}");
+                    uploadedFilePaths.Add($"{accountFolder}/{fileName}");
                 }
             }
 
