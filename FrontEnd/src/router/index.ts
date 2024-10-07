@@ -8,6 +8,7 @@ import PhoneCardView from '@/views/PhoneCardView.vue';
 import LuckyWheelView from '@/views/LuckyWheelView.vue';
 import AddAccountView from '@/views/AddAccountView.vue';
 import AuctionView from '@/views/AuctionView.vue';
+import GameAccountDetailView from '@/views/GameAccountDetail.vue';
 import { userStore } from '../stores/auth';
 
 const routes = [
@@ -55,6 +56,11 @@ const routes = [
     path: '/auction',
     name: 'auction',
     component: AuctionView
+  },
+  {
+    path: '/gameaccountdetail/:id?',
+    name: 'gameaccountdetail',
+    component: GameAccountDetailView
   },
 ];
 

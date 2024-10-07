@@ -74,6 +74,7 @@ export default defineComponent({
   name: 'AddAccount',
   setup() {
     const form = ref<AddGameAccountModel>({
+      id: 0,
       accountName: '',
       accountPassword: '',
       status: true,
@@ -81,6 +82,8 @@ export default defineComponent({
       earring: false,
       planet: '',
       price: 0,
+      posterName: '',          // Tên người đăng
+      createdDate: '',
     });
 
     const selectedFiles = ref<File[]>([]);
@@ -128,6 +131,7 @@ export default defineComponent({
 
     const resetForm = () => {
       form.value = {
+        id: 0,
         accountName: '',
         accountPassword: '',
         status: true,
@@ -135,6 +139,8 @@ export default defineComponent({
         earring: false,
         planet: '',
         price: 0,
+        posterName: '',         
+        createdDate: '',
       };
       selectedFiles.value = [];
     };

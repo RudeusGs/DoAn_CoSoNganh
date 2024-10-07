@@ -139,6 +139,8 @@ namespace DragonAcc.Service.Services
                         Earring = model.Earring ?? false,
                         Planet = model.Planet,
                         Price = model.Price,
+                        Name = _userService.UserName,
+                        Created = DateTime.UtcNow,
                         CreatedDate = _now
                     };
 

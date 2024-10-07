@@ -51,8 +51,8 @@
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 import Cookies from "js-cookie";
-import authApi from "@/api/authenticate.api"; // Ensure this path is correct
-import { userStore } from "../stores/auth"; // Ensure this path is correct
+import authApi from "@/api/authenticate.api";
+import { userStore } from "../stores/auth";
 
 export default defineComponent({
   setup() {
@@ -69,7 +69,7 @@ export default defineComponent({
             password: password.value,
           };
 
-          const response = await authApi.login(loginModel); // Make sure this method exists
+          const response = await authApi.login(loginModel);
 
           if (response && response.result?.isSuccess) {
             user.login({

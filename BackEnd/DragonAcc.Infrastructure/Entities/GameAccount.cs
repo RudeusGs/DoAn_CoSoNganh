@@ -9,6 +9,7 @@ namespace DragonAcc.Infrastructure.Entities
      */
     public class GameAccount : EntityBase
     {
+        public string? Name { get; set; }
         public string? AccountName { get; set; }
         public string? AccountPassword { get; set; }
         public string? Image { get; set; }
@@ -17,5 +18,6 @@ namespace DragonAcc.Infrastructure.Entities
         public bool? Earring { get; set; }
         public string? Planet { get; set; }
         public int? Server { get; set; }
+        public DateTime? Created { get; set; }
     }
 }

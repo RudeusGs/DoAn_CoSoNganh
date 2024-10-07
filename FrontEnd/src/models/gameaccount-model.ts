@@ -1,11 +1,14 @@
-//gameaccount-model.ts
+// gameaccount-model.ts
 export interface AddGameAccountModel {
-    accountName: string;        
-    accountPassword: string;    
-    status: boolean;            
-    server: string;           
-    earring?: boolean;         
-    planet: string;             
-    price: number;             
-    files?: File[];           
-  }
+  id: number
+  accountName: string;        
+  accountPassword: string;    
+  status: boolean;             
+  server: string;            
+  earring?: boolean;          
+  planet: string;              
+  price: number;               
+  files?: File[];              
+  posterName: string;           
+  createdDate: string;    
+}

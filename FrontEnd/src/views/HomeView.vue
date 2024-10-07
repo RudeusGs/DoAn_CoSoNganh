@@ -1,15 +1,64 @@
 <template>
   <div class="container">     
     <div class="row mt-5 g-2 justify-content-center">
-      <h2 class="d-flex justify-content-center">Các tài khoản gần đây</h2>
+
+      
+      <div class="filter-controls mb-3 p-4 bg-light rounded shadow-sm">
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="filterServer" class="form-label">Chọn Server</label>
+                <select v-model="filterServer" id="filterServer" class="form-select">
+                    <option value="">Chọn Server</option>
+                    <option v-for="server in uniqueServers" :key="server" :value="server">{{ server }}</option>
+                </select>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label for="filterPrice" class="form-label">Chọn Giá tối đa</label>
+                <select v-model="filterPrice" id="filterPrice" class="form-select">
+                    <option value="">Chọn Giá tối đa</option>
+                    <option v-for="price in priceOptions" :key="price" :value="price">{{ price }} VNĐ</option>
+                </select>
+            </div>
+
+            <div class="col-md-4 mb-3">
+                <label for="filterPlanet" class="form-label">Chọn Hành tinh</label>
+                <select v-model="filterPlanet" id="filterPlanet" class="form-select">
+                    <option value="">Chọn Hành tinh</option>
+                    <option v-for="planet in uniquePlanets" :key="planet" :value="planet">{{ planet }}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <h2 class="d-flex justify-content-center">Các tài khoản gần đây</h2>
       <div v-if="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
-      <div class="preview-card col-6 col-sm-6 col-md-4 mb-4" v-for="(item, index) in gameAccount" :key="index">
+      <div 
+        class="preview-card col-6 col-sm-6 col-md-4 mb-4" 
+        v-for="(item, index) in filteredAccounts" 
+        :key="index"
+      >
         <div class="preview-card__wrp">
           <div class="preview-card__item">
+            <div class="preview-card__header">
+              <img 
+                class="avatar" 
+                src="https://via.placeholder.com/40" 
+                alt="Avatar"
+              />
+              <div class="poster-info">
+                <span class="poster-name">{{ item.name }}</span>
+                <span class="post-time">{{ timeSince(item.createdDate) }}</span>
+              </div>
+            </div>
+
             <div class="preview-card__img">
-              <img :src="item.image || 'https://via.placeholder.com/150'" :alt="item.title" @load="imageLoaded(index)" @error="handleImageError(index)" />
-              <div v-if="loadingImages[index]">Loading image...</div>
-              <div v-if="!loadingImages[index] && imageError[index]" class="alert alert-danger">Image failed to load.</div>
+              <img 
+                class="card-img-top" 
+                :src="getFullImageUrl(item.image)" 
+                alt="Product image" 
+                @load="imageLoaded(index)"
+                @error="handleImageError(index)"
+              />
             </div>
             
             <div class="preview-card__content">
@@ -17,7 +66,7 @@
               <div class="preview-card__title">Hành tinh: {{ item.planet }}</div> 
               <div class="preview-card__text">Server: {{ item.server }}</div>
               <div class="d-flex justify-content-between">
-                <a href="#" class="preview-card__button">Read More</a>
+                <a :href="`/gameaccountdetail/${item.id}`" class="preview-card__button">Read More</a>
                 <a href="#" class="preview-card__button">Buy</a>
               </div>
             </div>
@@ -29,16 +78,40 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from 'vue';
+import { defineComponent, ref, onMounted, onBeforeUnmount, computed } from 'vue';
 import homeApi from "@/api/home.api";
+interface GameAccount {
+  name: string;
+  accountName: string;
+  accountPassword: string;
+  image: string;
+  price: number;
+  status: string;
+  earring: string;
+  planet: string;
+  server: string;
+  createdDate: string;
+  id: number;
+  created: string;
+  updatedDate: string;
+  deleteDate?: string;
+  timeAgo?: string;
+}
 
 export default defineComponent({
   name: 'GameAccountComponent',
   setup() {
-    const gameAccount = ref<any>([]);
+    const gameAccount = ref<GameAccount[]>([]); // Specify type as GameAccount[]
     const errorMessage = ref<string | null>(null);
     const loadingImages = ref<boolean[]>([]);
     const imageError = ref<boolean[]>([]);
+    const filterServer = ref<string>('');
+    const filterPrice = ref<number | null>(null);
+    const filterPlanet = ref<string>('');
+    const uniqueServers = ref<string[]>([]);
+    const uniquePlanets = ref<string[]>([]);
+    const priceOptions = ref<number[]>([10000, 50000, 100000, 200000, 500000]);
+    let timer: ReturnType<typeof setInterval>;
 
     const fetchData = async () => {
       try {
@@ -47,12 +120,9 @@ export default defineComponent({
           gameAccount.value = response.data.result.data;
           loadingImages.value = new Array(gameAccount.value.length).fill(true);
           imageError.value = new Array(gameAccount.value.length).fill(false);
-
-          console.log(gameAccount.value);
-          gameAccount.value.forEach((item: { image: any; }) => {
-            console.log('Image URL:', item.image);
-          });
           errorMessage.value = null;
+          uniqueServers.value = [...new Set(gameAccount.value.map(item => item.server))];
+          uniquePlanets.value = [...new Set(gameAccount.value.map(item => item.planet))];
         } else {
           gameAccount.value = [];
           errorMessage.value = response?.data.result.message ?? "Lỗi";
@@ -61,6 +131,12 @@ export default defineComponent({
         gameAccount.value = [];
         errorMessage.value = "Có lỗi xảy ra khi tải dữ liệu.";
       }
+    };
+
+    const getFullImageUrl = (imageString: string) => {
+      const baseUrl = 'https://localhost:7224/';
+      const firstImage = imageString.split(';')[0];
+      return `${baseUrl}${firstImage}`;
     };
 
     const imageLoaded = (index: number) => {
@@ -72,20 +148,67 @@ export default defineComponent({
       imageError.value[index] = true;
     };
 
-    onMounted(fetchData);
+    const timeSince = (dateString: string) => {
+      const date = new Date(dateString);
+      const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000);
+      let interval = Math.floor(seconds / 31536000);
+      if (interval > 1) return `${interval} years ago`;
+      interval = Math.floor(seconds / 2592000);
+      if (interval > 1) return `${interval} months ago`;
+      interval = Math.floor(seconds / 86400);
+      if (interval > 1) return `${interval} days ago`;
+      interval = Math.floor(seconds / 3600);
+      if (interval > 1) return `${interval} hours ago`;
+      interval = Math.floor(seconds / 60);
+      if (interval > 1) return `${interval} minutes ago`;
+      return "just now";
+    };
+
+    const updateTimestamps = () => {
+      gameAccount.value.forEach((item) => {
+        item.timeAgo = timeSince(item.createdDate);
+      });
+    };
+
+    const filteredAccounts = computed(() => {
+      return gameAccount.value.filter(item => {
+        const matchesServer = filterServer.value ? item.server === filterServer.value : true;
+        const matchesPrice = filterPrice.value !== null ? item.price <= filterPrice.value : true;
+        const matchesPlanet = filterPlanet.value ? item.planet === filterPlanet.value : true;
+        return matchesServer && matchesPrice && matchesPlanet;
+      });
+    });
+
+    onMounted(() => {
+      fetchData();
+      updateTimestamps();
+      timer = setInterval(updateTimestamps, 1000);
+    });
+
+    onBeforeUnmount(() => {
+      clearInterval(timer);
+    });
 
     return {
       gameAccount,
       errorMessage,
       loadingImages,
+      getFullImageUrl,
       imageLoaded,
       handleImageError,
       imageError,
+      timeSince,
+      filterServer,
+      filterPrice,
+      filterPlanet,
+      filteredAccounts,
+      uniqueServers,
+      uniquePlanets,
+      priceOptions,
     };
   },
 });
 </script>
-
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800");
@@ -114,20 +237,53 @@ body {
   margin: 10px;
 }
 
+.preview-card__wrp {
+  padding: 10px;
+}
+
 .preview-card__item {
   display: flex;
   flex-direction: column; 
 }
 
+.preview-card__header {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.poster-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.poster-name {
+  font-weight: 600;
+  color: #333;
+}
+
+.post-time {
+  font-size: 12px;
+  color: #777;
+}
+
 .preview-card__img {
-  border-radius: 15px 15px 0 0;
   margin: 10px;
+  position: relative;
 }
 
 .preview-card__img img {
   width: 100%;
   height: auto;
-  border-radius: 15px 15px 0 0;
 }
 
 .preview-card__content {
@@ -169,5 +325,46 @@ body {
   .preview-card {
     margin: 5px;
   }
+
+  .preview-card__header {
+    padding: 5px;
+  }
+
+  .poster-name {
+    font-size: 14px;
+  }
+
+  .post-time {
+    font-size: 10px;
+  }
+}
+.filter-controls {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-label {
+  font-weight: bold;
+  color: #495057;
+}
+
+.form-select {
+  border: 2px solid #ced4da;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.mb-3 {
+  margin-bottom: 1rem !important;
+}
+
+.p-4 {
+  padding: 1.5rem !important;
+}
+
+.shadow-sm {
+  box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075) !important;
 }
 </style>
+
