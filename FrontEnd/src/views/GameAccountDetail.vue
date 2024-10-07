@@ -56,8 +56,8 @@ export default defineComponent({
 
     const fetchAccountDetails = async (id: number) => {
       try {
-        const response = await homeApi.getbyid(id);
-        console.log(response); // Check the response structure
+        const response = await homeApi.getById(id);
+        console.log(response);
         if (response && response.data.result.isSuccess) {
           accountDetails.value = response.data.result.data;
         } else {
