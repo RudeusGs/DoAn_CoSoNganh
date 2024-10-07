@@ -41,6 +41,9 @@
                   <li class="nav-item">
                       <a class="nav-link" href="/luckywheel">LuckyWheel</a>
                   </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/admin">Admin</a>
+                  </li>
               </ul>
               <div class="search-and-icons">
                   <form class="d-flex mb-2 me-2" role="search">

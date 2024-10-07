@@ -67,7 +67,7 @@ namespace DragonAcc.Controllers
         }
         [Authorize]
         [HttpPut("update")]
-        public async Task<IActionResult> Update([FromBody] InGameItem model)
+        public async Task<IActionResult> Update([FromBody] UpdateInGameItemModel model)
         {
             try
             {
