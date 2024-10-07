@@ -2,6 +2,8 @@
 using DragonAcc.Service;
 using DragonAcc.Service.Services;
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace DragonAcc
 {
@@ -12,20 +14,17 @@ namespace DragonAcc
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
             builder.Services.AddControllers();
             builder.Services.AddHostedService<ExpiredGiftCleanupService>();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+            // Configure Swagger/OpenAPI
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(options =>
             {
-                //var commitHash = Configuration["LastedCommitHash"];
-                //var commitMsg = Configuration["LastedCommitMsg"];
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "DRAGONACC 2024 WEB API",
                     Version = "v1",
-                    // Description = $"Commit hash: {commitHash} <br /> Commit message: {commitMsg}"
                 });
 
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -52,17 +51,21 @@ namespace DragonAcc
                         new string[] {}
                     }
                 });
+
                 options.CustomSchemaIds(type => type.ToString());
             });
 
+            // Configure CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAnyCorsPolicy",
                     builder => builder
-                    .WithOrigins("*")
-                    .AllowAnyMethod()
-                    .AllowAnyHeader());
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
             });
+
+            // Add application and infrastructure services
             builder.Services.AddApplicationServices();
             builder.Services.AddInfrastructureServices(builder.Configuration);
             var app = builder.Build();
@@ -73,12 +76,21 @@ namespace DragonAcc
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            // Phục vụ các tệp tĩnh từ wwwroot
             app.UseStaticFiles();
+
+            // Phục vụ các tệp tĩnh từ thư mục 'C:\Host\public' với RequestPath '/public'
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(@"C:\Host\public"),
+                RequestPath = "/public"
+            });
+
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseCors("AllowAnyCorsPolicy");
             app.UseAuthorization();
-
 
             app.MapControllers();
 
