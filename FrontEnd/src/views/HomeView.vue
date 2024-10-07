@@ -1,37 +1,37 @@
 <template>
   <div class="container">     
     <div class="row mt-5 g-2 justify-content-center">
-
-      
       <div class="filter-controls mb-3 p-4 bg-light rounded shadow-sm">
         <div class="row">
-            <div class="col-md-4 mb-3">
-                <label for="filterServer" class="form-label">Chọn Server</label>
-                <select v-model="filterServer" id="filterServer" class="form-select">
-                    <option value="">Chọn Server</option>
-                    <option v-for="server in uniqueServers" :key="server" :value="server">{{ server }}</option>
-                </select>
-            </div>
+          <div class="col-md-4 mb-3">
+            <label for="filterServer" class="form-label">Chọn Server</label>
+            <select v-model="filterServer" id="filterServer" class="form-select">
+              <option value="">Chọn Server</option>
+              <option v-for="server in uniqueServers" :key="server" :value="server">{{ server }}</option>
+            </select>
+          </div>
 
-            <div class="col-md-4 mb-3">
-                <label for="filterPrice" class="form-label">Chọn Giá tối đa</label>
-                <select v-model="filterPrice" id="filterPrice" class="form-select">
-                    <option value="">Chọn Giá tối đa</option>
-                    <option v-for="price in priceOptions" :key="price" :value="price">{{ price }} VNĐ</option>
-                </select>
-            </div>
+          <div class="col-md-4 mb-3">
+            <label for="filterPrice" class="form-label">Chọn Giá tối đa</label>
+            <select v-model="filterPrice" id="filterPrice" class="form-select">
+              <option value="">Chọn Giá tối đa</option>
+              <option v-for="price in priceOptions" :key="price" :value="price">{{ price }} VNĐ</option>
+            </select>
+          </div>
 
-            <div class="col-md-4 mb-3">
-                <label for="filterPlanet" class="form-label">Chọn Hành tinh</label>
-                <select v-model="filterPlanet" id="filterPlanet" class="form-select">
-                    <option value="">Chọn Hành tinh</option>
-                    <option v-for="planet in uniquePlanets" :key="planet" :value="planet">{{ planet }}</option>
-                </select>
-            </div>
+          <div class="col-md-4 mb-3">
+            <label for="filterPlanet" class="form-label">Chọn Hành tinh</label>
+            <select v-model="filterPlanet" id="filterPlanet" class="form-select">
+              <option value="">Chọn Hành tinh</option>
+              <option v-for="planet in uniquePlanets" :key="planet" :value="planet">{{ planet }}</option>
+            </select>
+          </div>
         </div>
-    </div>
-    <h2 class="d-flex justify-content-center">Các tài khoản gần đây</h2>
+      </div>
+
+      <h2 class="d-flex justify-content-center">Các tài khoản gần đây</h2>
       <div v-if="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+
       <div 
         class="preview-card col-6 col-sm-6 col-md-4 mb-4" 
         v-for="(item, index) in filteredAccounts" 
@@ -52,13 +52,17 @@
             </div>
 
             <div class="preview-card__img">
-              <img 
-                class="card-img-top" 
-                :src="getFullImageUrl(item.image)" 
-                alt="Product image" 
-                @load="imageLoaded(index)"
-                @error="handleImageError(index)"
-              />
+              <div class="image-border-wrapper">
+                <img 
+                  class="card-img-top" 
+                  :src="getFullImageUrl(item.image)" 
+                  alt="Product image" 
+                  @load="imageLoaded(index)"
+                  @error="handleImageError(index)"
+                   @click="openImageModal(getFullImageUrl(item.image), item.image.split(';'))"
+                  style="width: 336px; height: 198px; object-fit: cover;"
+                />
+              </div>
             </div>
             
             <div class="preview-card__content">
@@ -66,20 +70,60 @@
               <div class="preview-card__title">Hành tinh: {{ item.planet }}</div> 
               <div class="preview-card__text">Server: {{ item.server }}</div>
               <div class="d-flex justify-content-between">
-                <a :href="`/gameaccountdetail/${item.id}`" class="preview-card__button">Read More</a>
-                <a href="#" class="preview-card__button">Buy</a>
+                <a href="#" class="preview-card__button">Like</a>
+                <a href="#" class="preview-card__button">Comment</a>
+                <a href="#" class="preview-card__button" data-bs-toggle="modal" data-bs-target="#confirmationModal" @click="selectedAccount = item">Buy</a>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="imageModalLabel">Xem Ảnh Phóng To</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center">
+            <img :src="selectedImage" class="img-fluid" alt="Enlarged Image" />
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" @click="showPrevImage" :disabled="currentImageIndex === 0">Prev</button>
+            <button class="btn btn-secondary" @click="showNextImage" :disabled="currentImageIndex === imageList.length - 1">Next</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="confirmationModalLabel">Xác nhận mua hàng</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p>{{ senderId }} muốn mua tài khoản <strong>{{ selectedAccount?.name }}</strong> của bạn, bạn có đồng ý không?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Không</button>
+            <button type="button" class="btn btn-primary" @click="confirmPurchase">Có</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, onBeforeUnmount, computed } from 'vue';
 import homeApi from "@/api/home.api";
+declare const bootstrap: any;
 interface GameAccount {
   name: string;
   accountName: string;
@@ -101,7 +145,7 @@ interface GameAccount {
 export default defineComponent({
   name: 'GameAccountComponent',
   setup() {
-    const gameAccount = ref<GameAccount[]>([]); // Specify type as GameAccount[]
+    const gameAccount = ref<GameAccount[]>([]);
     const errorMessage = ref<string | null>(null);
     const loadingImages = ref<boolean[]>([]);
     const imageError = ref<boolean[]>([]);
@@ -110,8 +154,46 @@ export default defineComponent({
     const filterPlanet = ref<string>('');
     const uniqueServers = ref<string[]>([]);
     const uniquePlanets = ref<string[]>([]);
-    const priceOptions = ref<number[]>([10000, 50000, 100000, 200000, 500000]);
+    const priceOptions = ref<number[]>([100000, 400000, 700000, 1000000, 3000000]);
+    const selectedAccount = ref<GameAccount | null>(null);
+      const selectedImage = ref<string | undefined>(undefined);
+        const imageList = ref<string[]>([]);
+          const currentImageIndex = ref<number>(0);
+            const senderId = ref<string>('SenderId');
+
     let timer: ReturnType<typeof setInterval>;
+      
+      const openImageModal = (imageUrl: string, images: string[]) => {
+    selectedImage.value = imageUrl;
+    imageList.value = images;
+    currentImageIndex.value = images.indexOf(imageUrl); // Set chỉ số hình ảnh hiện tại
+
+    const modalElement = document.getElementById('imageModal');
+    if (modalElement) {
+      const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+      modal.show();
+    }
+  };
+  const showNextImage = () => {
+  if (currentImageIndex.value < imageList.value.length - 1) {
+    currentImageIndex.value++;
+    selectedImage.value = imageList.value[currentImageIndex.value];
+    console.log('Next Image URL:', selectedImage.value);
+  } else {
+    console.log('No more images to show.');
+  }
+};
+
+const showPrevImage = () => {
+  if (currentImageIndex.value > 0) {
+    currentImageIndex.value--;
+    selectedImage.value = imageList.value[currentImageIndex.value];
+    console.log('Previous Image URL:', selectedImage.value);
+  } else {
+    console.log('No previous images to show.');
+  }
+};
+
 
     const fetchData = async () => {
       try {
@@ -170,10 +252,25 @@ export default defineComponent({
       });
     };
 
+    const confirmPurchase = () => {
+  if (selectedAccount.value) {
+    alert(`Bạn đã xác nhận mua tài khoản: ${selectedAccount.value.name}`);
+    
+    // Add the logic to handle the purchase here, such as sending a request to your server.
+
+    const modalElement = document.getElementById('confirmationModal');
+    if (modalElement) {
+      const modal = bootstrap.Modal.getInstance(modalElement);
+      modal.hide();
+    }
+  }
+};
+
+
     const filteredAccounts = computed(() => {
       return gameAccount.value.filter(item => {
         const matchesServer = filterServer.value ? item.server === filterServer.value : true;
-        const matchesPrice = filterPrice.value !== null ? item.price <= filterPrice.value : true;
+        const matchesPrice = filterPrice.value ? item.price <= filterPrice.value : true;
         const matchesPlanet = filterPlanet.value ? item.planet === filterPlanet.value : true;
         return matchesServer && matchesPrice && matchesPlanet;
       });
@@ -181,8 +278,7 @@ export default defineComponent({
 
     onMounted(() => {
       fetchData();
-      updateTimestamps();
-      timer = setInterval(updateTimestamps, 1000);
+      timer = setInterval(updateTimestamps, 60000);
     });
 
     onBeforeUnmount(() => {
@@ -193,22 +289,31 @@ export default defineComponent({
       gameAccount,
       errorMessage,
       loadingImages,
-      getFullImageUrl,
-      imageLoaded,
-      handleImageError,
       imageError,
-      timeSince,
       filterServer,
       filterPrice,
       filterPlanet,
-      filteredAccounts,
       uniqueServers,
       uniquePlanets,
       priceOptions,
+      selectedAccount,
+      confirmPurchase,
+      filteredAccounts,
+      getFullImageUrl,
+      timeSince,
+      imageLoaded,
+      handleImageError,
+      selectedImage,
+      openImageModal,
+    showNextImage,
+    showPrevImage,
+    imageList,
+    currentImageIndex,
     };
   },
 });
 </script>
+
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800");
@@ -227,6 +332,7 @@ body {
   margin: 0 auto;
 }
 
+
 .preview-card {
   position: relative;
   background: #fff;
@@ -244,6 +350,12 @@ body {
 .preview-card__item {
   display: flex;
   flex-direction: column; 
+}
+.image-border-wrapper {
+  border: 2px solid #ddd; /* Change the color as needed */
+  border-radius: 8px; /* Optional: Add rounded corners */
+  padding: 5px; /* Space between the image and the border */
+  margin: auto; /* Center the border wrapper */
 }
 
 .preview-card__header {

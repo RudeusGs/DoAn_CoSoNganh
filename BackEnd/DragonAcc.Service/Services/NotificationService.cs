@@ -5,6 +5,7 @@ using DragonAcc.Service.Interfaces;
 using DragonAcc.Service.Models;
 using DragonAcc.Service.Models.Notification;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,30 +22,33 @@ namespace DragonAcc.Service.Services
 
         public async Task<ApiResult> Add(AddNotificationModel model)
         {
-            var notificate = await _dataContext.Notifications.FirstOrDefaultAsync(x => x.Title == model.Title);
-            if (notificate == null)
+            if (model.SenderId == null || model.ReceiverId == null)
             {
-                using var tran = _dataContext.Database.BeginTransaction();
-                try
-                {
-                    var notification = new Notification()
-                    {
-                        Title = model.Title,
-                        Message = model.Message,
-                        CreatedDate = DateTime.Now,
-                    };
-                    _dataContext.Notifications.Add(notification);
-                    await _dataContext.SaveChangesAsync();
-                    await tran.CommitAsync();
-                    return new(model);
-                }
-                catch (Exception e)
-                {
-                    await tran.RollbackAsync();
-                    throw new Exception(e.Message);
-                }
+                return new ApiResult() { Message = "Người gửi và người nhận không được để trống." };
             }
-            return new ApiResult() { Message = "Notification này đã tồn tại" };
+
+            var notification = new Notification()
+            {
+                SenderId = _userService.UserId,
+                ReceiverId = model.ReceiverId,
+                Title = model.Title,
+                Message = model.Message,
+                CreatedDate = DateTime.Now,
+            };
+
+            using var tran = _dataContext.Database.BeginTransaction();
+            try
+            {
+                _dataContext.Notifications.Add(notification);
+                await _dataContext.SaveChangesAsync();
+                await tran.CommitAsync();
+                return new ApiResult(notification);
+            }
+            catch (Exception e)
+            {
+                await tran.RollbackAsync();
+                throw new Exception(e.Message);
+            }
         }
 
         public async Task<ApiResult> Delete(int id)

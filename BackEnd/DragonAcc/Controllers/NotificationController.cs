@@ -1,7 +1,5 @@
 ﻿using DragonAcc.Service.Interfaces;
 using DragonAcc.Service.Models.Notification;
-using DragonAcc.Service.Models.Recharger;
-using DragonAcc.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,10 +10,12 @@ namespace DragonAcc.Controllers
     public class NotificationController : BaseController
     {
         private readonly INotificationService _notificationService;
+
         public NotificationController(INotificationService notificationService)
         {
             _notificationService = notificationService;
         }
+
         [HttpGet("get-all")]
         public async Task<IActionResult> GetAll()
         {
@@ -36,6 +36,7 @@ namespace DragonAcc.Controllers
                 return Response(e.Message, 500);
             }
         }
+
         [Authorize]
         [HttpPost("add")]
         public async Task<IActionResult> Add([FromForm] AddNotificationModel model)
@@ -50,7 +51,6 @@ namespace DragonAcc.Controllers
                 return Response(e.Message, 500);
             }
         }
-
 
         [Authorize]
         [HttpPut("update")]

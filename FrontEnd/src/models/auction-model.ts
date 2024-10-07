@@ -1,4 +1,4 @@
-// src/models/auction.models.ts
+
 
 export interface AddAuctionModel {
     auctionName: string;

@@ -8,7 +8,6 @@ import PhoneCardView from '@/views/PhoneCardView.vue';
 import LuckyWheelView from '@/views/LuckyWheelView.vue';
 import AddAccountView from '@/views/AddAccountView.vue';
 import AuctionView from '@/views/AuctionView.vue';
-import GameAccountDetailView from '@/views/GameAccountDetail.vue';
 import { userStore } from '../stores/auth';
 
 const routes = [
@@ -57,11 +56,6 @@ const routes = [
     name: 'auction',
     component: AuctionView
   },
-  {
-    path: '/gameaccountdetail/:id?',
-    name: 'gameaccountdetail',
-    component: GameAccountDetailView
-  },
 ];
 
 const router = createRouter({
@@ -73,11 +67,12 @@ router.beforeEach((to, from, next) => {
   const authStore = userStore();
   
   if (to.meta.requiresAuth && !authStore.user) {
+    alert("Bạn cần đăng nhập để truy cập trang này!");
     next('/login');
-    alert("Không vào được đâu!");
   } else {
     next();
   }
 });
 
 export default router;
+
