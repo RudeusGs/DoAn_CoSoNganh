@@ -4,7 +4,6 @@ namespace DragonAcc.Infrastructure.Entities
 {
     public class Recharger : EntityBase
     {
-
         public string? Dentistry { get; set; }
         public string? Amount { get; set; }
         public string? CardNumber { get; set; }

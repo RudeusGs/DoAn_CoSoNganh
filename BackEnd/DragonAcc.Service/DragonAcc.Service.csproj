@@ -20,7 +20,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\OrderHistory\" />
+    <Folder Include="Models\ReportDetail\" />
+    <Folder Include="Models\PurchasedAccount\" />
+    <Folder Include="Models\WithDrawMoney\" />
   </ItemGroup>
 
 </Project>

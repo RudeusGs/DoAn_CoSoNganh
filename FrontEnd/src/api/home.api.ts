@@ -1,5 +1,3 @@
-
-
 import baseApi from './base.api';
 
 const homeApi = {
@@ -10,5 +8,4 @@ const homeApi = {
         return await baseApi.get(`GameAccount/get-by-id?id=${id}`);
     },
 };
-
 export default homeApi;

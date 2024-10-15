@@ -1,6 +1,5 @@
 ﻿using DragonAcc.Infrastructure;
 using DragonAcc.Infrastructure.Entities;
-using DragonAcc.Infrastructure.Extensions;
 using DragonAcc.Service.Common.IServices;
 using DragonAcc.Service.Interfaces;
 using DragonAcc.Service.Models;
@@ -110,19 +109,19 @@ namespace DragonAcc.Service.Services
 
         public async Task<ApiResult> GetAll()
         {
-            var result = await _dataContext.Orders.Exist().ToListAsync();
+            var result = await _dataContext.Orders.ToListAsync();
             return new(result);
         }
 
         public async Task<ApiResult> GetById(int id)
         {
-            var result = await _dataContext.Orders.Exist().FirstOrDefaultAsync(x => x.Id == id);
+            var result = await _dataContext.Orders.FirstOrDefaultAsync(x => x.Id == id);
             return new(result);
         }
 
         public async Task<ApiResult> GetOrderByUserId()
         {
-            var result = await _dataContext.Orders.Exist()
+            var result = await _dataContext.Orders
                 .Where(x => x.UserId == _userService.UserId)
                 .ToListAsync();
             return new(result);
@@ -130,7 +129,7 @@ namespace DragonAcc.Service.Services
 
         public async Task<ApiResult> Update(Order model)
         {
-            var order = await _dataContext.Orders.Exist().FirstOrDefaultAsync(x => x.Id == model.Id);
+            var order = await _dataContext.Orders.FirstOrDefaultAsync(x => x.Id == model.Id);
             if (order != null)
             {
                 using var tran = _dataContext.Database.BeginTransaction();

@@ -166,7 +166,7 @@ namespace DragonAcc.Service.Services
                         var fileUploads = await UploadFiles(auction.Id, model.Files);
                         if (fileUploads.Count > 0)
                         {
-                            auction.Image = string.Join(",", fileUploads); 
+                            auction.Image = string.Join(",", fileUploads);
                         }
                     }
 

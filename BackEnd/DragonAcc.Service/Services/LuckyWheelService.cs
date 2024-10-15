@@ -162,6 +162,40 @@ namespace DragonAcc.Service.Services
             var result = await _dataContext.LuckyWheels.FirstOrDefaultAsync(x => x.Id == id);
             return new(result);
         }
+        public async Task<ApiResult> SpinWheel()
+        {
+            var luckyWheels = await _dataContext.LuckyWheels.ToListAsync();
+
+            if (luckyWheels == null || luckyWheels.Count == 0)
+            {
+                return new() { Message = "Không có sản phẩm nào trong vòng quay!" };
+            }
+
+            // Tính tổng xác suất của tất cả các sản phẩm (lưu ý mỗi sản phẩm có tỷ lệ phần trăm riêng)
+            float totalProbability = luckyWheels.Sum(lw => lw.Probability ?? 0);
+
+            if (totalProbability <= 0)
+            {
+                return new() { Message = "Tổng xác suất không hợp lệ!" };
+            }
+
+            // Chọn một số ngẫu nhiên từ 0 đến tổng xác suất
+            Random rand = new Random();
+            float randomNumber = (float)(rand.NextDouble() * totalProbability);
+
+            // Duyệt qua các sản phẩm và chọn sản phẩm dựa trên khoảng xác suất của nó
+            float cumulativeProbability = 0f;
+            foreach (var luckyWheel in luckyWheels)
+            {
+                cumulativeProbability += luckyWheel.Probability ?? 0;
+                if (randomNumber <= cumulativeProbability)
+                {
+                    return new(luckyWheel); // Sản phẩm được chọn dựa trên xác suất
+                }
+            }
+
+            return new() { Message = "Không chọn được sản phẩm nào!" }; // Trường hợp không chọn được sản phẩm (dự phòng)
+        }
 
         public Task<ApiResult> Add(LuckyWheel model)
         {
