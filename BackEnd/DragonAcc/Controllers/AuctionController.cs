@@ -17,6 +17,26 @@ namespace DragonAcc.Controllers
         {
             _auctionService = auctionService;
         }
+        [HttpGet("get-all")]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _auctionService.GetAll();
+            return Response(result);
+        }
+
+        [HttpGet("get-by-id")]
+        public async Task<IActionResult> GetById([FromQuery] int id)
+        {
+            try
+            {
+                var result = await _auctionService.GetById(id);
+                return Response(result);
+            }
+            catch (Exception e)
+            {
+                return Response(e.Message, 500);
+            }
+        }
         [Authorize]
         [HttpPost("add")]
         public async Task<IActionResult> Add([FromForm] AddAuctionModel model)
@@ -67,9 +87,9 @@ namespace DragonAcc.Controllers
             {
                 var result = await _auctionService.UpdateCurrentPrice(model);
                 return Response(result);
-            
+
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return Response(e.Message, 500);
             }

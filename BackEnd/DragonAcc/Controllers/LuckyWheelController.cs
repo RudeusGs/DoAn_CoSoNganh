@@ -80,5 +80,18 @@ namespace DragonAcc.Controllers
                 return Response(e.Message, 500);
             }
         }
+        [HttpPost("spin")]
+        public async Task<IActionResult> Spin()
+        {
+            try
+            {
+                var result = await _luckyWheelService.SpinWheel();
+                return Response(result);
+            }
+            catch (Exception e)
+            {
+                return Response(e.Message, 500);
+            }
+        }
     }
 }

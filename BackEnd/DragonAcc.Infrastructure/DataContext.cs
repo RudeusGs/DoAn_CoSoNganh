@@ -15,7 +15,6 @@ namespace DragonAcc.Infrastructure
         public virtual DbSet<Payment> Payments { get; set; }
         public virtual DbSet<Review> Reviews { get; set; }
         public virtual DbSet<OrderDetail> OrderDetails { get; set; }
-        public virtual DbSet<OrderHistory> OrderHistorys { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<LuckyWheel> LuckyWheels { get; set; }
         public virtual DbSet<InGameItem> InGameItems { get; set; }
@@ -26,6 +25,8 @@ namespace DragonAcc.Infrastructure
         public virtual DbSet<Auction> Auctions { get; set; }
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<Recharger> Rechargers { get; set; }
-
+        public virtual DbSet<PurchasedAccount> PurchasedAccounts { get; set; }
+        public virtual DbSet<WithDrawMoney> WithDrawMoneys { get; set; }
+        public virtual DbSet<ReportDetail> ReportDetails { get; set; }
     }
 }

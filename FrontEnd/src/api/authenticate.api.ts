@@ -1,5 +1,5 @@
 import baseApi from './base.api';
-
+import Cookies from 'js-cookie';
 export default {
     login: async (model: LoginModel) : Promise<any|undefined> => {
       const response= await baseApi.postAuthenticate('Authenticate/login', model);
@@ -18,7 +18,7 @@ export default {
         fullName: name,
         email,
       });
-    }
+    },  
 };
 
 export interface LoginModel{

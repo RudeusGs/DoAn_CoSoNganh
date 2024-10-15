@@ -1,6 +1,5 @@
 ﻿using DragonAcc.Infrastructure;
 using DragonAcc.Infrastructure.Entities;
-using DragonAcc.Infrastructure.Extensions;
 using DragonAcc.Service.Common.IServices;
 using DragonAcc.Service.Interfaces;
 using DragonAcc.Service.Models;
@@ -35,7 +34,7 @@ namespace DragonAcc.Service.Services
 
         public async Task<ApiResult> GetOrderDetailByOrderId(int orderId)
         {
-            var result = await _dataContext.OrderDetails.Exist()
+            var result = await _dataContext.OrderDetails
                 .Where(x => x.OrderId == orderId)
                 .Select(od => new OrderDetailModel
                 {

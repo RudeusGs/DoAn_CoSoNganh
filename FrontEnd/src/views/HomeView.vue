@@ -99,7 +99,8 @@
     </div>
     
 
-    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true" v-for="(item, index) in filteredAccounts" 
+    :key="index">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -107,7 +108,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <p>{{ senderId }} muốn mua tài khoản <strong>{{ selectedAccount?.name }}</strong> của bạn, bạn có đồng ý không?</p>
+            <p>Bạn có muốn mua tài khoản của <strong>{{ selectedAccount?.name }}</strong> không?</p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Không</button>
@@ -123,6 +124,7 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted, onBeforeUnmount, computed } from 'vue';
 import homeApi from "@/api/home.api";
+import { useRouter } from 'vue-router';
 declare const bootstrap: any;
 interface GameAccount {
   name: string;
@@ -159,14 +161,14 @@ export default defineComponent({
       const selectedImage = ref<string | undefined>(undefined);
         const imageList = ref<string[]>([]);
           const currentImageIndex = ref<number>(0);
-            const senderId = ref<string>('SenderId');
+            const router = useRouter();
 
     let timer: ReturnType<typeof setInterval>;
       
       const openImageModal = (imageUrl: string, images: string[]) => {
     selectedImage.value = imageUrl;
     imageList.value = images;
-    currentImageIndex.value = images.indexOf(imageUrl); // Set chỉ số hình ảnh hiện tại
+    currentImageIndex.value = images.indexOf(imageUrl);
 
     const modalElement = document.getElementById('imageModal');
     if (modalElement) {
@@ -252,22 +254,50 @@ const showPrevImage = () => {
       });
     };
 
-    const confirmPurchase = () => {
-  if (selectedAccount.value) {
-    alert(`Bạn đã xác nhận mua tài khoản: ${selectedAccount.value.name}`);
-    
-    // Add the logic to handle the purchase here, such as sending a request to your server.
 
-    const modalElement = document.getElementById('confirmationModal');
-    if (modalElement) {
-      const modal = bootstrap.Modal.getInstance(modalElement);
-      modal.hide();
+    const confirmPurchase = async () => {
+  if (selectedAccount.value) {
+    try {
+      const response = await homeApi.getById(selectedAccount.value.id);
+      if (response && response.data.result.isSuccess) {
+        const accountDetails = response.data.result.data;
+
+        // Lấy danh sách tài khoản đã mua từ Local Storage (nếu có)
+        let purchasedAccounts = JSON.parse(localStorage.getItem('purchasedAccounts') || '[]');
+
+        // Thêm tài khoản mới vào danh sách
+        purchasedAccounts.push({
+          id: selectedAccount.value.id,
+          username: accountDetails.accountName,
+          password: accountDetails.accountPassword,
+        });
+
+        // Lưu lại danh sách vào Local Storage
+        localStorage.setItem('purchasedAccounts', JSON.stringify(purchasedAccounts));
+
+        // Điều hướng đến trang danh sách tài khoản đã mua
+        router.push({
+          name: 'purchasedaccount',
+        });
+
+        // Đóng modal sau khi chuyển hướng
+        const modalElement = document.getElementById('confirmationModal');
+        if (modalElement) {
+          const modal = bootstrap.Modal.getInstance(modalElement);
+          modal.hide();
+        }
+      } else {
+        alert("Có lỗi xảy ra khi lấy thông tin tài khoản.");
+      }
+    } catch (error) {
+      alert("Có lỗi xảy ra khi mua tài khoản.");
     }
   }
 };
 
 
-    const filteredAccounts = computed(() => {
+
+  const filteredAccounts = computed(() => {
       return gameAccount.value.filter(item => {
         const matchesServer = filterServer.value ? item.server === filterServer.value : true;
         const matchesPrice = filterPrice.value ? item.price <= filterPrice.value : true;

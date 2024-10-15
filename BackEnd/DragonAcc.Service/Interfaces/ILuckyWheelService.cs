@@ -9,5 +9,6 @@ namespace DragonAcc.Service.Interfaces
     {
         public Task<ApiResult> Add(AddLuckyWheelModel model);
         public Task<ApiResult> Update(UpdateLuckyWheelModel model);
+        public Task<ApiResult> SpinWheel();
     }
 }

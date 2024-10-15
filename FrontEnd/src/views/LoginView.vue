@@ -79,16 +79,17 @@ export default defineComponent({
               fullName: response.result.data.fullName,
             });
             Cookies.set("token", response.result.data.token);
+            localStorage.setItem('token', response.result.data.token);
             router.push("/");
           } else {
-            alert("Sai tài khoản hoặc mật khẩu.");
+            alert("Invalid username or password.");
           }
         } catch (error) {
           console.error("Error during login:", error);
-          alert("Bạn chưa vào chạy API");
+          alert("API is not running.");
         }
       } else {
-        alert("Tài khoản và mật khẩu không được để trống.");
+        alert("Username and password cannot be empty.");
       }
     };
 

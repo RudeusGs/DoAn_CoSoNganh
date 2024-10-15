@@ -133,13 +133,13 @@ namespace DragonAcc.Service.Services
                     var newGameAccount = new GameAccount
                     {
                         AccountName = model.AccountName,
+                        UserId = _userService.UserId,
                         AccountPassword = model.AccountPassword,
                         Status = model.Status,
                         Server = model.Server,
                         Earring = model.Earring ?? false,
                         Planet = model.Planet,
                         Price = model.Price,
-                        Name = _userService.UserName,
                         Created = DateTime.UtcNow,
                         CreatedDate = _now
                     };
