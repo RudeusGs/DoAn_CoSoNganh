@@ -7,6 +7,5 @@ namespace DragonAcc.Infrastructure.Entities
         public string? AccountName { get; set; }
         public string? AccountPassword { get; set; }
         public int? UserId { get; set; }
-        public string? Report {  get; set; }
     }
 }

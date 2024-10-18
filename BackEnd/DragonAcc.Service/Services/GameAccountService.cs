@@ -135,7 +135,7 @@ namespace DragonAcc.Service.Services
                         AccountName = model.AccountName,
                         UserId = _userService.UserId,
                         AccountPassword = model.AccountPassword,
-                        Status = model.Status,
+                        Status = "Chưa bán",
                         Server = model.Server,
                         Earring = model.Earring ?? false,
                         Planet = model.Planet,
@@ -224,7 +224,42 @@ namespace DragonAcc.Service.Services
 
             return new() { Message = "Không tìm thấy tài khoản game này." };
         }
+        public async Task<ApiResult> BuyGameAccount(BuyGameAccountModel model)
+        {
+            var gameAccount = await _dataContext.GameAccounts.FirstOrDefaultAsync(x => x.Id == model.GameAccountId);
+            if (model.GameAccountId == null)
+            {
+                return new ApiResult { Message = "Game account not found." };
+            }
+            if(gameAccount.Status == "Đã bán")
+            {
+                return new ApiResult { Message = "Tài khoản này đã bán" };
+            }
+            var user = await _dataContext.Users.FirstOrDefaultAsync(x => x.Id == model.UserId);
+            using var tran = await _dataContext.Database.BeginTransactionAsync();
+            try
+            {
+                var purchasedAccount = new PurchasedAccount
+                {
+                    UserId = _userService.UserId,
+                    AccountName = gameAccount.AccountName,
+                    AccountPassword = gameAccount.AccountPassword,
+                    CreatedDate = _now,
+                };
 
+                _dataContext.PurchasedAccounts.Add(purchasedAccount);
+                gameAccount.Status = "Đã bán";
+                await _dataContext.SaveChangesAsync();
+                await tran.CommitAsync();
+
+                return new ApiResult { Message = "Purchase successful!" };
+            }
+            catch (Exception ex)
+            {
+                await tran.RollbackAsync();
+                throw new Exception($"Error during purchase: {ex.Message}");
+            }
+        }
 
 
     }

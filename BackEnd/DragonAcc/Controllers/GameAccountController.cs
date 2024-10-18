@@ -80,5 +80,20 @@ namespace DragonAcc.Controllers
                 return Response(e.Message, 500);
             }
         }
+        [Authorize]
+        [HttpPost("Purchase")]
+        public async Task<IActionResult> BuyGameAccount([FromBody] BuyGameAccountModel model)
+        {
+            try
+            {
+                var result = await _gameAccountService.BuyGameAccount(model);
+                return Response(result);
+            }
+            catch (Exception e)
+            {
+                return Response(e.Message, 500);
+            }
+        }
+
     }
 }

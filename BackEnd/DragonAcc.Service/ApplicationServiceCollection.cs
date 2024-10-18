@@ -45,6 +45,7 @@ namespace DragonAcc.Service
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderDetailService, OrderDetailService>();
             services.AddScoped<IDailyCheckInService, DailyCheckInService>();
+            services.AddScoped<IPurchasedAccountService, PurchasedAccountService>();
             #endregion
             return services;
         }
