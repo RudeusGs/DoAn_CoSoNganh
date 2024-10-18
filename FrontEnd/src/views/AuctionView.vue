@@ -1,31 +1,34 @@
 <template>
-    <div class="auction-list container mt-5 mb-5">
-      <h2 class="text-center mb-4">Auction List</h2>
-      
-      <div v-if="loading" class="text-center">
-        <p>Loading auctions...</p>
-      </div>
-      
-      <div v-if="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
-      
-      <div v-if="auctions.length > 0" class="row g-4">
-        <div class="col-md-6 col-lg-4" v-for="auction in auctions" :key="auction.id">
-          <div class="auction-card card shadow-sm">
-            <img :src="getImageUrl(auction.image)" class="card-img-top" alt="Auction Image" />
-            <div class="card-body">
-              <h5 class="card-title">{{ auction.auctionName }}</h5>
-              <p class="card-text">Gía bắt đầu: {{ auction.startPrice }} VNĐ</p>
-              <p class="card-text">Ngày bắt đầu: {{ formatDate(auction.startDateTime) }}</p>
+  <div class="auction-list container mt-5 mb-5">
+    <h2 class="text-center mb-4">Danh sách đấu giá</h2>
+    
+    <div v-if="loading" class="text-center">
+      <p>Đang tải các phiên đấu giá...</p>
+    </div>
+    
+    <div v-if="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+    
+    <div v-if="auctions.length > 0" class="row g-4">
+      <div class="col-md-6 col-lg-4" v-for="auction in auctions" :key="auction.id">
+        <div class="auction-card card shadow-sm">
+          <img :src="getImageUrl(auction.image)" class="card-img-top" alt="Hình ảnh đấu giá" />
+          <div class="card-body">
+            <h5 class="card-title">{{ auction.auctionName }}</h5>
+            <p class="card-text">Giá bắt đầu: {{ auction.startPrice }} VNĐ</p>
+            <p class="card-text">Ngày bắt đầu: {{ formatDate(auction.startDateTime) }}</p>
+            <router-link :to="{ name: 'auctionDetail', params: { id: auction.id } }">
               <button :class="buttonClass(auction)" class="btn w-100 mt-3">
                 {{ buttonLabel(auction) }}
               </button>
-            </div>
+            </router-link>
           </div>
         </div>
-      </div>     
-      <div v-else class="alert alert-info">No auctions available at the moment.</div>
-    </div>
-  </template>
+      </div>
+    </div>     
+    <div v-else class="alert alert-info">Hiện tại không có phiên đấu giá nào.</div>
+  </div>
+</template>
+
   
   <script lang="ts">
   import { defineComponent, ref, onMounted } from 'vue';
@@ -41,7 +44,7 @@
   
       const fetchAuctions = async () => {
         try {
-          const response = await AuctionApi.getallAuction();
+          const response = await AuctionApi.getAllAuction();
           if (response.data.result && response.data.result.data.length > 0) {
             auctions.value = response.data.result.data as AuctionModel[];
           } else {
