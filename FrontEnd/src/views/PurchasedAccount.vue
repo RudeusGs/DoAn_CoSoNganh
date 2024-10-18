@@ -1,69 +1,97 @@
 <template>
-  <div class="container mt-5">
+  <div class="container-fluid py-5">
     <h1 class="text-center mb-4">Danh sách tài khoản đã mua</h1>
-    <table class="table table-bordered table-hover shadow-sm rounded-lg" v-if="purchasedAccounts.length > 0">
-      <thead>
-        <tr>
-          <th class="bg-light">Username</th>
-          <th class="bg-light">Password</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(account, index) in purchasedAccounts" :key="index">
-          <td>{{ account.username }}</td>
-          <td>{{ account.password }}</td>
-        </tr>
-      </tbody>
-    </table>
-    <p v-else>Không có tài khoản nào được mua.</p>
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover shadow-sm rounded-lg" v-if="purchasedAccounts.length > 0">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Username</th>
+            <th scope="col">Password</th>
+            <th scope="col">Ngày mua</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(account, index) in purchasedAccounts" :key="index">
+            <th scope="row">{{ index + 1 }}</th>
+            <td>{{ account.username }}</td>
+            <td>{{ account.password }}</td>
+            <td>{{ formatDate(account.purchaseDate) }}</td>
+          </tr>
+        </tbody>
+      </table>
+      <p v-else>Không có tài khoản nào được mua.</p>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
+import purchasedaccountApi from '@/api/purchasedaccountservice.api';
+
 interface Account {
   username: string;
   password: string;
+  purchaseDate: string;
 }
 
 export default defineComponent({
   setup() {
-    // Chỉ định kiểu dữ liệu cho danh sách tài khoản đã mua
     const purchasedAccounts = ref<Account[]>([]);
 
-    // Lấy danh sách tài khoản đã mua từ Local Storage khi component được mount
+    const fetchPurchasedAccounts = async () => {
+      try {
+        const response = await purchasedaccountApi.getAllPurchasedAccount();
+        if (response && response.data.result.isSuccess) {
+          purchasedAccounts.value = response.data.result.data.map((account: any) => ({
+            username: account.accountName,
+            password: account.accountPassword,
+            purchaseDate: account.createdDate,
+          }));
+        }
+      } catch (error) {
+        console.error("Lỗi khi lấy tài khoản đã mua:", error);
+      }
+    };
+
+    const formatDate = (dateString: string) => {
+      const date = new Date(dateString);
+      return date.toLocaleDateString();
+    };
+
     onMounted(() => {
-      const storedAccounts = JSON.parse(localStorage.getItem('purchasedAccounts') || '[]');
-      purchasedAccounts.value = storedAccounts;
+      fetchPurchasedAccounts();
     });
 
     return {
       purchasedAccounts,
+      formatDate,
     };
   },
 });
 </script>
 
-
 <style scoped>
-.container {
-  max-width: 600px;
+.container-fluid {
+  max-width: 1200px; /* Tăng độ rộng của bảng */
   margin: auto;
 }
 
 .table {
   border-radius: 15px;
   overflow: hidden;
+  width: 100%; /* Đảm bảo bảng chiếm toàn bộ chiều rộng */
 }
 
 th, td {
-  padding: 1rem;
-  font-size: 1.2rem;
+  padding: 0.5rem; /* Giảm khoảng cách giữa các hàng */
+  font-size: 0.9rem; /* Giảm kích thước font để hàng ngắn hơn */
   text-align: left;
 }
 
-th.bg-light {
-  background-color: #f8f9fa;
+th.thead-dark {
+  background-color: #343a40;
+  color: #fff;
 }
 
 .shadow-sm {
@@ -73,4 +101,10 @@ th.bg-light {
 .rounded-lg {
   border-radius: 15px !important;
 }
+
+.table-responsive {
+  max-height: 600px; /* Tăng chiều dài của bảng */
+  overflow-y: auto; /* Đảm bảo bảng cuộn được nếu quá dài */
+}
+
 </style>

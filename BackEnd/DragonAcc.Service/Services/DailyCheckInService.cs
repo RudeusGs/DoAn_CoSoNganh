@@ -73,7 +73,7 @@ namespace DragonAcc.Service.Services
                         // Người dùng chưa từng điểm danh => Tạo mới bản ghi
                         var newCheckIn = new DailyCheckIn
                         {
-                            UserId = user.Id,
+                            UserId = _userService.UserId,
                             Coin = model.Coin,
                             CheckInDate = currentDate,
                             StreakCount = 1 // Bắt đầu streak mới

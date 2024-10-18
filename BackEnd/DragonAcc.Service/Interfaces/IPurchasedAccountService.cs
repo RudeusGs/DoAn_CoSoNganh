@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using DragonAcc.Infrastructure.Entities;
+using DragonAcc.Service.Common.IServices;
 
 namespace DragonAcc.Service.Interfaces
 {
-    internal interface IPurchasedAccountService
+    public interface IPurchasedAccountService : IServiceBase<PurchasedAccount>
     {
+
     }
 }
