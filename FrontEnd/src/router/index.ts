@@ -9,6 +9,7 @@ import LuckyWheelView from '@/views/LuckyWheelView.vue';
 import AddAccountView from '@/views/AddAccountView.vue';
 import AuctionView from '@/views/AuctionView.vue';
 import PurchasedAccountView from '@/views/PurchasedAccount.vue';
+import AuctionDetailView from '@/views/AuctionDetail.vue';
 import { userStore } from '../stores/auth';
 
 const routes = [
@@ -58,9 +59,15 @@ const routes = [
     component: AuctionView
   },
   {
+    path: '/auction/:id',
+    name: 'auctionDetail',
+    component: () => import('@/views/AuctionDetail.vue'),
+    props: true
+  },  
+  {
     path: '/purchasedaccount',
     name: 'purchasedaccount',
-    component: PurchasedAccountView, // Component bạn muốn chuyển đến
+    component: PurchasedAccountView,
   },
 ];
 

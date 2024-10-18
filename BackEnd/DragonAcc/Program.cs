@@ -55,7 +55,6 @@ namespace DragonAcc
                 options.CustomSchemaIds(type => type.ToString());
             });
 
-            // Configure CORS
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAnyCorsPolicy",
@@ -65,22 +64,16 @@ namespace DragonAcc
                         .AllowAnyHeader());
             });
 
-            // Add application and infrastructure services
             builder.Services.AddApplicationServices();
             builder.Services.AddInfrastructureServices(builder.Configuration);
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
-            // Phục vụ các tệp tĩnh từ wwwroot
             app.UseStaticFiles();
-
-            // Phục vụ các tệp tĩnh từ thư mục 'C:\Host\public' với RequestPath '/public'
             app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(@"C:\Host\public"),
