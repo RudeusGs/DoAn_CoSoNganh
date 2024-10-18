@@ -1,38 +1,26 @@
 <template>
   <div class="add-account-form container mt-5 mb-5">
-    <form @submit.prevent="submitForm" class="p-4 rounded shadow bg-white">
-      <h2 class="text-center mb-4">Add New Account</h2>
+    <form @submit.prevent="submitForm" class="p-4 rounded shadow-lg bg-white">
+      <h2 class="text-center mb-4">Đăng bán tài khoản</h2>
       
-      <div class="row">
+      <div class="row mb-3">
         <div class="col-md-6 mb-3">
           <label for="accountName" class="form-label">Account Name</label>
           <input v-model="form.accountName" type="text" id="accountName" class="form-control" required />
         </div>
-
         <div class="col-md-6 mb-3">
           <label for="accountPassword" class="form-label">Password</label>
           <input v-model="form.accountPassword" type="password" id="accountPassword" class="form-control" required />
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-md-6 mb-3">
-          <label for="status" class="form-label">Status</label>
-          <select v-model="form.status" id="status" class="form-select" required>
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
-          </select>
-        </div>
-
+      <div class="row mb-3">
         <div class="col-md-6 mb-3">
           <label for="server" class="form-label">Server</label>
           <select v-model="form.server" id="server" class="form-select" required>
             <option v-for="n in 10" :key="n" :value="n">Server {{ n }}</option>
           </select>
         </div>
-      </div>
-
-      <div class="row">
         <div class="col-md-6 mb-3">
           <label for="planet" class="form-label">Planet</label>
           <select v-model="form.planet" id="planet" class="form-select" required>
@@ -41,30 +29,31 @@
             <option value="Xayda">Xayda</option>
           </select>
         </div>
+      </div>
 
+      <div class="row mb-3">
         <div class="col-md-6 mb-3">
           <label for="price" class="form-label">Price</label>
           <input v-model="form.price" type="number" id="price" class="form-control" required />
         </div>
-      </div>
-
-      <div class="form-group mb-3">
-        <div class="form-check">
-          <input v-model="form.earring" type="checkbox" id="earring" class="form-check-input" />
-          <label class="form-check-label" for="earring">Earring</label>
+        <div class="col-md-6 mb-3">
+          <div class="form-check form-switch">
+            <input v-model="form.earring" type="checkbox" id="earring" class="form-check-input" />
+            <label class="form-check-label" for="earring">Earring</label>
+          </div>
         </div>
       </div>
 
       <div class="form-group mb-4">
         <label for="files" class="form-label">Upload Images</label>
         <input type="file" @change="handleFileChange" multiple class="form-control" />
-        <div class="image-preview mt-3">
+        <div class="image-preview mt-3 d-flex flex-wrap">
           <img v-for="image in imagePreviews" :src="image" :key="image" class="img-thumbnail me-2" style="max-width: 100px;" />
         </div>
       </div>
 
       <div class="d-grid">
-        <button type="submit" class="btn btn-secondary btn-block">Add Account</button>
+        <button type="submit" class="btn btn-primary btn-block">Add Account</button>
       </div>
     </form>
 
@@ -73,10 +62,9 @@
   </div>
 </template>
 
-
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
-import { type AddGameAccountModel } from '@/models/gameaccount-model'; 
+import { type AddGameAccountModel } from '@/models/gameaccount-model';
 import { addGameAccount } from '@/api/addgameaccount.api';
 
 export default defineComponent({
@@ -91,7 +79,7 @@ export default defineComponent({
       earring: false,
       planet: '',
       price: 0,
-      posterName: '',      
+      posterName: '',
       createdDate: '',
     });
 
@@ -147,7 +135,7 @@ export default defineComponent({
         earring: false,
         planet: '',
         price: 0,
-        posterName: '',         
+        posterName: '',
         createdDate: '',
       };
       selectedFiles.value = [];
@@ -167,16 +155,19 @@ export default defineComponent({
 });
 </script>
 
-
 <style scoped>
 .add-account-form {
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .form-label {
   font-weight: bold;
+}
+
+.form-control, .form-select, .form-check-input {
+  border-radius: 10px;
 }
 
 .btn-block {
@@ -184,11 +175,19 @@ export default defineComponent({
   width: 100%;
 }
 
-.shadow {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.shadow-lg {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .bg-white {
-  background-color: #fff;
+  background-color: #ffffff;
+}
+
+.image-preview img {
+  border-radius: 10px;
+}
+
+.img-thumbnail {
+  border: none;
 }
 </style>
