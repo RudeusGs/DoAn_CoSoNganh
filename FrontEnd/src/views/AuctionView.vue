@@ -1,85 +1,154 @@
 <template>
-    <div class="vh-100 d-flex align-items-center justify-content-center">
-        <div class="auction-container w-100">
-            <div class="row justify-content-center">
-                <div class="col-md-4 mb-3 text-center">
-                    <h4>Participants</h4>
-                    <div class="participant-list">
-                        <p>User1</p>
-                        <p>User2</p>
-                        <p>User3</p>
-                    </div>
-                </div>
-                <div class="col-md-8 text-center">
-                    <div class="auction-details mx-auto">
-                        <h3>Item Auction</h3>
-                        <img src="../assets/about.png" alt="Auction Item" class="img-fluid mb-3">
-                        <div class="auction-info mb-3">
-                            <p><strong>Auction Info:</strong></p>
-                            <p>Starting Bid: $50</p>
-                            <p>Current Bid: $75</p>
-                            <p>Time Remaining: 2 hours 15 minutes</p>
-                        </div>
-                        <form>
-                            <div class="form-group">
-                                <input type="number" class="form-control" placeholder="Enter your bid">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Place Bid</button>
-                        </form>
-                        <!-- User information -->
-                       
-                    </div>
-                    
-                </div>
-                
+    <div class="auction-list container mt-5 mb-5">
+      <h2 class="text-center mb-4">Auction List</h2>
+      
+      <div v-if="loading" class="text-center">
+        <p>Loading auctions...</p>
+      </div>
+      
+      <div v-if="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+      
+      <div v-if="auctions.length > 0" class="row g-4">
+        <div class="col-md-6 col-lg-4" v-for="auction in auctions" :key="auction.id">
+          <div class="auction-card card shadow-sm">
+            <img :src="getImageUrl(auction.image)" class="card-img-top" alt="Auction Image" />
+            <div class="card-body">
+              <h5 class="card-title">{{ auction.auctionName }}</h5>
+              <p class="card-text">Gía bắt đầu: {{ auction.startPrice }} VNĐ</p>
+              <p class="card-text">Ngày bắt đầu: {{ formatDate(auction.startDateTime) }}</p>
+              <button :class="buttonClass(auction)" class="btn w-100 mt-3">
+                {{ buttonLabel(auction) }}
+              </button>
             </div>
-            
+          </div>
         </div>
-        <div class="user-info ms-5">
-            <p><strong>Họ và tên:</strong> Nguyễn Văn A</p>
-            <p><strong>Số dư tài khoản:</strong> $1000</p>
-        </div>
+      </div>     
+      <div v-else class="alert alert-info">No auctions available at the moment.</div>
     </div>
-    
-</template>
+  </template>
+  
+  <script lang="ts">
+  import { defineComponent, ref, onMounted } from 'vue';
+  import AuctionApi from '@/api/auction.api';
+  import type { AuctionModel } from '@/models/auction-model';
+  
+  export default defineComponent({
+    name: 'AuctionList',
+    setup() {
+      const auctions = ref<AuctionModel[]>([]);
+      const loading = ref(true);
+      const errorMessage = ref<string | null>(null);
+  
+      const fetchAuctions = async () => {
+        try {
+          const response = await AuctionApi.getallAuction();
+          if (response.data.result && response.data.result.data.length > 0) {
+            auctions.value = response.data.result.data as AuctionModel[];
+          } else {
+            errorMessage.value = 'No auctions found.';
+          }
+        } catch (error) {
+          errorMessage.value = 'Failed to fetch auctions.';
+        } finally {
+          loading.value = false;
+        }
+      };
+  
+      const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('vi-VN', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        });
+      };
+  
+      const getImageUrl = (imagePath: string) => {
+        const baseUrl = 'https://localhost:7224/';
+        return `${baseUrl}${imagePath}`;
+      };
+  
+      const buttonClass = (auction: AuctionModel) => {
+  const now = new Date();
+  const startDate = new Date(auction.startDateTime);
+  const timeAuctionMs = parseAuctionDuration(auction.timeAuction);
+  const endDate = new Date(startDate.getTime() + timeAuctionMs);
+  if (now < startDate) return 'btn-warning';
+  if (now >= startDate && now <= endDate) return 'btn-success';
+  return 'btn-danger';
+};
 
-<script lang="ts">
-</script>
+const buttonLabel = (auction: AuctionModel) => {
+  const now = new Date();
+  const startDate = new Date(auction.startDateTime);
+  const timeAuctionMs = parseAuctionDuration(auction.timeAuction);
+  const endDate = new Date(startDate.getTime() + timeAuctionMs);
 
-<style scoped>
-.vh-100 {
-    height: 100vh;
-}
+  if (now < startDate) return 'Sắp tới';
+  if (now >= startDate && now <= endDate) return 'Tham gia';
+  return 'Hết hạn';
+};
 
-.auction-container {
-    max-width: 800px;
-    width: 100%;
-    background: white;
+const parseAuctionDuration = (duration: string): number => {
+  const [hours, minutes, seconds] = duration.split(':').map(Number);
+  return ((hours * 60 * 60) + (minutes * 60) + seconds) * 1000;
+};
+
+  
+      onMounted(() => {
+        fetchAuctions();
+      });
+  
+      return {
+        auctions,
+        loading,
+        errorMessage,
+        formatDate,
+        getImageUrl,
+        buttonClass,
+        buttonLabel,
+      };
+    },
+  });
+  </script>
+  
+  <style scoped>
+  .auction-list {
     padding: 20px;
+    background-color: #f9f9f9;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .auction-card {
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  
+  .auction-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-img-top {
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin: 10px 0;
+    padding: 5px;
+    background-color: #f0f0f0;
+  }
+  
+  .btn {
+    border-radius: 50px;
+  }
+  
+  .alert-info, .alert-danger {
     text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.participant-list {
-    max-height: 150px;
-    overflow-y: auto;
-    border: 1px solid #dee2e6;
-    border-radius: 5px;
-    padding: 10px;
-}
-
-.btn-primary {
-    width: 100%;
-}
-
-.user-info {
-    background-color: #f8f9fa;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #dee2e6;
-}
-</style>
+    margin-top: 20px;
+  }
+  </style>
+  

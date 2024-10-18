@@ -11,7 +11,7 @@
               </select>
             </div>
 
-            <div class="col-sm-6 col-md-3 mb-3">
+            <div class="col-md-3 mb-3">
               <label for="filterPrice" class="form-label">Chọn Giá tối đa</label>
               <select v-model="filterPrice" id="filterPrice" class="form-select">
                 <option value="">Chọn Giá tối đa</option>
@@ -59,10 +59,14 @@
                     <span class="poster-name">{{ item.name }}</span>
                     <span class="post-time">{{ timeSince(item.createdDate) }}</span>
                   </div>
-                  <div class="poster-info text-end status-info" style="color: black;">
-                    <span class="post-time">{{ item.status === 'Đã bán' ? 'Đã bán' : 'Chưa bán' }}</span>
+                  <div class="poster-info text-end status-info" style="color: black; position: relative;">
+                    <span class="post-time">Trạng thái: {{ item.status === 'Đã bán' ? 'Đã bán' : 'Chưa bán' }}</span>
+                    <span 
+                      class="status-dot" 
+                      :class="item.status === 'Đã bán' ? 'sold' : 'available'">
+                    </span>
                   </div>
-                </div>                                                 
+                </div>                                                                             
               </div>
 
               <div class="preview-card__img">
@@ -326,15 +330,16 @@
   };
 
 
-    const filteredAccounts = computed(() => {
-        return gameAccount.value.filter(item => {
-          const matchesServer = filterServer.value ? item.server === filterServer.value : true;
-          const matchesPrice = filterPrice.value ? item.price <= filterPrice.value : true;
-          const matchesPlanet = filterPlanet.value ? item.planet === filterPlanet.value : true;
-          const matchesStatus = filterStatus.value ? item.status === filterStatus.value : true;
-          return matchesServer && matchesPrice && matchesPlanet && matchesStatus;
-        });
-      });
+  const filteredAccounts = computed(() => {
+  return gameAccount.value.filter(item => {
+    const matchesServer = filterServer.value ? item.server === filterServer.value : true;
+    const matchesPrice = filterPrice.value ? item.price <= filterPrice.value : true;
+    const matchesPlanet = filterPlanet.value ? item.planet === filterPlanet.value : true;
+    const matchesStatus = filterStatus.value ? item.status.includes(filterStatus.value) : true;
+    return matchesServer && matchesPrice && matchesPlanet && matchesStatus;
+  });
+});
+
 
       onMounted(() => {
     fetchData();
@@ -429,6 +434,7 @@
   }
   .status-info {
     min-width: 200px;
+    position: relative;
   }
 
   .preview-card__header {
@@ -463,9 +469,25 @@
 
   .preview-card__img {
     margin: 10px;
-    position: relative;
   }
-
+  .status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    position: absolute;
+    top: -5px; /* Đặt khoảng cách từ trên cùng */
+    right: -20px; /* Đặt khoảng cách từ phải */
+  }
+  
+  .sold {
+    background-color: red;
+  }
+  
+  .available {
+    background-color: green;
+  }
+  
   .preview-card__img img {
     width: 100%;
     height: auto;
