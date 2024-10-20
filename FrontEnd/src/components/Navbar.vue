@@ -57,12 +57,10 @@
             </div>
             <div class="profile text-black dropdown" style="cursor: pointer" @click="toggleDropdown">
               <a class="d-flex align-items-center" @click.prevent="isLoggedIn ? null : goToLogin()">
-                <!-- Thay đổi biểu tượng dựa trên trạng thái đăng nhập -->
                 <i :class="isLoggedIn ? 'bi-person-check-fill' : 'bi-person'"></i>
               </a>
-              <!-- Dropdown chỉ hiển thị khi người dùng đã đăng nhập -->
               <div v-if="isLoggedIn && showDropdown" class="dropdown-menu custom-dropdown-menu show">
-                <a class="dropdown-item" href="#">Thông tin cá nhân</a>
+                <a class="dropdown-item" href="/profile">Thông tin cá nhân</a>
                 <a class="dropdown-item" href="/purchasedaccount">Lịch sử</a>
                 <a class="dropdown-item" @click.prevent="logout" href="/login">Đăng xuất</a>
               </div>

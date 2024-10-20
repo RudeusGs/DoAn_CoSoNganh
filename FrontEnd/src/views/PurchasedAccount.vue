@@ -73,7 +73,7 @@ export default defineComponent({
 
 <style scoped>
 .container-fluid {
-  max-width: 1200px; /* Tăng độ rộng của bảng */
+  max-width: 1200px;
   margin: auto;
 }
 
@@ -103,8 +103,8 @@ th.thead-dark {
 }
 
 .table-responsive {
-  max-height: 600px; /* Tăng chiều dài của bảng */
-  overflow-y: auto; /* Đảm bảo bảng cuộn được nếu quá dài */
+  max-height: 700px;
+  overflow-y: auto;
 }
 
 </style>

@@ -81,7 +81,6 @@
                 />
               </div>
             </div>
-            
             <div class="preview-card__content">
               <span class="preview-card__code">{{ item.price }} VNĐ</span>
               <div class="preview-card__title">Hành tinh: {{ item.planet }}</div> 
@@ -97,24 +96,34 @@
       </div>
     </div>
 
-    <!-- Image Modal -->
-    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="imageModalLabel">Xem Ảnh Phóng To</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body text-center">
-            <img :src="selectedImage" class="img-fluid" alt="Enlarged Image" />
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" @click="showPrevImage" :disabled="currentImageIndex === 0">Prev</button>
-            <button class="btn btn-secondary" @click="showNextImage" :disabled="currentImageIndex === imageList.length - 1">Next</button>
-          </div>
+<!-- Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="imageModalLabel">Xem Ảnh Phóng To</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body position-relative">
+        <!-- Left Arrow -->
+        <button class="image-nav-arrow left" @click="showPrevImage" :disabled="currentImageIndex === 0">
+          <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <!-- Image Display -->
+        <div class="image-wrapper">
+          <img :src="selectedImage" class="img-fluid" alt="Enlarged Image" style="max-width: 100%; max-height: 500px; object-fit: contain;" />
         </div>
+
+        <!-- Right Arrow -->
+        <button class="image-nav-arrow right" @click="showNextImage" :disabled="currentImageIndex === imageList.length - 1">
+          <i class="fas fa-chevron-right"></i>
+        </button>
       </div>
     </div>
+  </div>
+</div>
+
 
     <!-- Confirmation Modal -->
     <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
@@ -201,58 +210,75 @@ export default defineComponent({
     const router = useRouter();
 
     let timer: ReturnType<typeof setInterval>;
+        const getFullImageUrlFromPath = (imagePath: string) => {
+    if (!imagePath) {
+      return 'https://via.placeholder.com/336x198';
+    }
+    const baseUrl = 'https://localhost:7224/';
+    return `${baseUrl}${imagePath}`;
+  };
+
       
-    const openImageModal = (imageUrl: string, images: string[]) => {
-      selectedImage.value = imageUrl;
-      imageList.value = images;
-      currentImageIndex.value = images.indexOf(imageUrl);
+  const openImageModal = (imageUrl: string, images: string[]) => {
+  const fullImageList = images.map(img => getFullImageUrlFromPath(img.trim()));
+  selectedImage.value = imageUrl;
+  imageList.value = fullImageList;
+  currentImageIndex.value = fullImageList.indexOf(imageUrl);
 
-      const modalElement = document.getElementById('imageModal');
-      if (modalElement) {
-        const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
-        modal.show();
-      }
-    };
+  const modalElement = document.getElementById('imageModal');
+  if (modalElement) {
+    const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
+    modal.show();
+  }
+};
 
-    const showNextImage = () => {
-      if (currentImageIndex.value < imageList.value.length - 1) {
-        currentImageIndex.value++;
-        selectedImage.value = imageList.value[currentImageIndex.value];
-      }
-    };
+const showNextImage = () => {
+  if (currentImageIndex.value < imageList.value.length - 1) {
+    currentImageIndex.value++;
+    selectedImage.value = imageList.value[currentImageIndex.value];
+  }
+};
 
-    const showPrevImage = () => {
-      if (currentImageIndex.value > 0) {
-        currentImageIndex.value--;
-        selectedImage.value = imageList.value[currentImageIndex.value];
-      }
-    };
+const showPrevImage = () => {
+  if (currentImageIndex.value > 0) {
+    currentImageIndex.value--;
+    selectedImage.value = imageList.value[currentImageIndex.value];
+  }
+};
+
+
 
     const fetchData = async () => {
-      try {
-        const response = await homeApi.getAllGameAccounts();
-        if (response && response.data.result.isSuccess) {
-          gameAccount.value = response.data.result.data;
-          loadingImages.value = new Array(gameAccount.value.length).fill(true);
-          imageError.value = new Array(gameAccount.value.length).fill(false);
-          errorMessage.value = null;
-          uniqueServers.value = [...new Set(gameAccount.value.map(item => item.server))];
-          uniquePlanets.value = [...new Set(gameAccount.value.map(item => item.planet))];
-        } else {
-          gameAccount.value = [];
-          errorMessage.value = response?.data.result.message ?? "Lỗi";
-        }
-      } catch (error) {
-        gameAccount.value = [];
-        errorMessage.value = "Có lỗi xảy ra khi tải dữ liệu.";
-      }
-    };
+  try {
+    const response = await homeApi.getAllGameAccounts();
+    if (response && response.data.result.isSuccess) {
+      gameAccount.value = response.data.result.data
+        .sort((a: { createdDate: string | number | Date; }, b: { createdDate: string | number | Date; }) => new Date(b.createdDate).getTime() - new Date(a.createdDate).getTime()); // Sắp xếp mới nhất trước
+      loadingImages.value = new Array(gameAccount.value.length).fill(true);
+      imageError.value = new Array(gameAccount.value.length).fill(false);
+      errorMessage.value = null;
+      uniqueServers.value = [...new Set(gameAccount.value.map(item => item.server))];
+      uniquePlanets.value = [...new Set(gameAccount.value.map(item => item.planet))];
+    } else {
+      gameAccount.value = [];
+      errorMessage.value = response?.data.result.message ?? "Lỗi";
+    }
+  } catch (error) {
+    gameAccount.value = [];
+    errorMessage.value = "Có lỗi xảy ra khi tải dữ liệu.";
+  }
+};
 
-    const getFullImageUrl = (imageString: string) => {
-      const baseUrl = 'https://localhost:7224/';
-      const firstImage = imageString.split(';')[0];
-      return `${baseUrl}${firstImage}`;
-    };
+
+    const getFullImageUrl = (imageString: string | null) => {
+  if (!imageString) {
+    return 'https://via.placeholder.com/336x198';
+  }
+
+  const baseUrl = 'https://localhost:7224/';
+  const firstImage = imageString.split(';')[0];
+  return `${baseUrl}${firstImage}`;
+};
 
     const imageLoaded = (index: number) => {
       loadingImages.value[index] = false;
@@ -323,14 +349,17 @@ export default defineComponent({
     };
 
     const filteredAccounts = computed(() => {
-      return gameAccount.value.filter(item => {
-        const matchesServer = filterServer.value ? item.server === filterServer.value : true;
-        const matchesPrice = filterPrice.value ? item.price <= filterPrice.value : true;
-        const matchesPlanet = filterPlanet.value ? item.planet === filterPlanet.value : true;
-        const matchesStatus = filterStatus.value ? item.status.includes(filterStatus.value) : true;
-        return matchesServer && matchesPrice && matchesPlanet && matchesStatus;
-      });
-    });
+  return gameAccount.value
+    .filter(item => {
+      const matchesServer = filterServer.value ? item.server === filterServer.value : true;
+      const matchesPrice = filterPrice.value ? item.price <= filterPrice.value : true;
+      const matchesPlanet = filterPlanet.value ? item.planet === filterPlanet.value : true;
+      const matchesStatus = filterStatus.value ? item.status.includes(filterStatus.value) : true;
+      return matchesServer && matchesPrice && matchesPlanet && matchesStatus;
+    })
+    .slice(0, 10);
+});
+
 
     onMounted(() => {
       fetchData();
@@ -380,12 +409,13 @@ export default defineComponent({
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700,800");
+
 * {
   box-sizing: border-box;
 }
 
 body {
-  background-color: #f5f5f5; 
+  background-color: #f5f5f5;
   min-height: 100vh;
   font-family: "Fira Sans", sans-serif;
 }
@@ -395,12 +425,101 @@ body {
   margin: 0 auto;
 }
 
+.modal-lg {
+  max-width: 80%; /* Enlarge modal to 80% of the screen */
+}
+
+.modal-body {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-body img {
+  max-height: 500px; /* Ensure image doesn't exceed 500px height */
+  object-fit: contain; /* Maintain aspect ratio */
+}
+
+.image-wrapper {
+  position: relative;
+  width: 80%; /* Adjust based on your needs */
+  text-align: center;
+}
+
+.image-nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 50%;
+  padding: 15px;
+  color: white;
+  cursor: pointer;
+  font-size: 2rem;
+}
+
+.image-nav-arrow.left {
+  left: 10px;
+}
+
+.image-nav-arrow.right {
+  right: 10px;
+}
+
+.image-nav-arrow:disabled {
+  display: none;
+}
+
+.image-nav-arrow:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* Image hover animation */
+.preview-card__img {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.preview-card__img img {
+  width: 100%;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+.preview-card__img:hover img {
+  transform: scale(1.1); /* Image zooms in on hover */
+}
+
+/* Text overlay on hover */
+.preview-card__img::after {
+  content: 'Click to view details';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  background-color: rgba(0, 0, 0, 0.6);
+  padding: 10px;
+  font-size: 16px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none; /* Allow clicks to pass through */
+}
+
+.preview-card__img:hover::after {
+  opacity: 1;
+}
+
 .preview-card {
   position: relative;
   background: #fff;
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
-  border-radius: 15px; 
-  overflow: hidden; 
+  border-radius: 15px;
+  overflow: hidden;
   transition: box-shadow 0.3s;
   margin: 10px;
 }
@@ -411,34 +530,9 @@ body {
 
 .preview-card__item {
   display: flex;
-  flex-direction: column; 
-}
-.three-dots-btn {
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
+  flex-direction: column;
 }
 
-.dropdown-menu {
-  position: absolute;
-  top: 40px;
-  right: 10px;
-  background-color: white;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  border-radius: 4px;
-  padding: 10px;
-}
-
-.dropdown-item {
-  display: block;
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
-.dropdown-item:hover {
-  background-color: #f0f0f0;
-}
 .image-border-wrapper {
   border: 2px solid #ddd;
   border-radius: 8px;
@@ -480,66 +574,39 @@ body {
   color: #777;
 }
 
-.preview-card__img {
-  margin: 10px;
-}
-
-.preview-card__img img {
-  width: 100%;
-  height: auto;
-}
-
 .preview-card__content {
   padding: 20px;
 }
 
 .preview-card__code {
-  color: #aaa; 
+  color: #aaa;
   margin-bottom: 10px;
 }
 
 .preview-card__title {
   font-size: 20px;
   font-weight: 700;
-  color: #333; 
+  color: #333;
   margin-bottom: 10px;
 }
 
 .preview-card__text {
-  color: #555; 
+  color: #555;
   margin-bottom: 20px;
 }
 
 .preview-card__button {
   display: inline-block;
   padding: 10px 20px;
-  border-radius: 50px; 
-  background-color: #7f7f7f; 
-  color: #fff; 
+  border-radius: 50px;
+  background-color: #7f7f7f;
+  color: #fff;
   text-decoration: none;
   transition: background-color 0.3s;
 }
 
 .preview-card__button:hover {
-  background-color: #454545; 
-}
-
-@media (max-width: 576px) {
-  .preview-card {
-    margin: 5px;
-  }
-
-  .preview-card__header {
-    padding: 5px;
-  }
-
-  .poster-name {
-    font-size: 14px;
-  }
-
-  .post-time {
-    font-size: 10px;
-  }
+  background-color: #454545;
 }
 
 .filter-controls {
@@ -559,15 +626,22 @@ body {
   padding: 10px;
 }
 
-.mb-3 {
-  margin-bottom: 1rem !important;
-}
+@media (max-width: 576px) {
+  .preview-card {
+    margin: 5px;
+  }
 
-.p-4 {
-  padding: 1.5rem !important;
-}
+  .preview-card__header {
+    padding: 5px;
+  }
 
-.shadow-sm {
-  box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .075) !important;
+  .poster-name {
+    font-size: 14px;
+  }
+
+  .post-time {
+    font-size: 10px;
+  }
 }
 </style>
+

@@ -252,7 +252,7 @@ namespace DragonAcc.Service.Services
                 await _dataContext.SaveChangesAsync();
                 await tran.CommitAsync();
 
-                return new ApiResult { Message = "Purchase successful!" };
+                return new ApiResult { Message = "Mua tài khoản thành công" };
             }
             catch (Exception ex)
             {
