@@ -10,6 +10,7 @@ import AddAccountView from '@/views/AddAccountView.vue';
 import AuctionView from '@/views/AuctionView.vue';
 import PurchasedAccountView from '@/views/PurchasedAccount.vue';
 import AuctionDetailView from '@/views/AuctionDetail.vue';
+import ProfileView from '@/views/ProfileView.vue';
 import { userStore } from '../stores/auth';
 
 const routes = [
@@ -68,6 +69,11 @@ const routes = [
     path: '/purchasedaccount',
     name: 'purchasedaccount',
     component: PurchasedAccountView,
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: ProfileView,
   },
 ];
 

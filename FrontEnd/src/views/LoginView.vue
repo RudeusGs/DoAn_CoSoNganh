@@ -77,6 +77,8 @@ export default defineComponent({
               username: response.result.data.username,
               email: response.result.data.email,
               fullName: response.result.data.fullName,
+              balance: response.result.data.balance,
+              coin: response.result.data.coin,
             });
             Cookies.set("token", response.result.data.token);
             localStorage.setItem('token', response.result.data.token);

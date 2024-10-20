@@ -1,8 +1,5 @@
-﻿using DragonAcc.Infrastructure.Entities;
-using DragonAcc.Service.Interfaces;
-using DragonAcc.Service.Models.AccountGame;
+﻿using DragonAcc.Service.Interfaces;
 using DragonAcc.Service.Models.Auction;
-using DragonAcc.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

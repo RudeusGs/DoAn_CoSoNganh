@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Models\AccountWebsite\" />
     <Folder Include="Models\ReportDetail\" />
     <Folder Include="Models\PurchasedAccount\" />
     <Folder Include="Models\WithDrawMoney\" />

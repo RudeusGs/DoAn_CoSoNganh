@@ -8,6 +8,8 @@ export interface LoginModel{
     userId:Number,
     email: string,
     fullName?: string,
+    balance: string,
+    coin: Number,
   }
   
  export  interface LoginResponseModel{
