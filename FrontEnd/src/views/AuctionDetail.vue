@@ -1,52 +1,67 @@
 <template>
-    <div class="auction-container container mt-5 mb-5">
-      <div class="row">
-        <div class="col-md-8" v-if="auction">
-          <div class="card shadow-lg">
-            <div class="image-container">
-                <img :src="getImageUrl(auction.image)" class="auction-image" alt="Hình ảnh đấu giá">
-              </div>
-              
-            <div class="card-body">
-              <h5 class="card-title">{{ auction.auctionName }}</h5>
-              <p class="card-text">{{ auction.prize }}</p>
-              <p class="card-text"><strong>Giá hiện tại:</strong> {{ auction.currentPrice }} VNĐ</p>
-              <p class="card-text"><strong>Giá bắt đầu:</strong> {{ auction.startPrice }} VNĐ</p>
-              <p class="card-text"><strong>Ngày bắt đầu:</strong> {{ formatDate(auction.startDateTime) }}</p>
-              <p class="card-text"><strong>Thời gian đấu giá:</strong> {{ auction.timeAuction }}</p>
-              <p class="card-text"><strong>Trạng thái:</strong> {{ auction.status }}</p>
-            </div>
+  <div class="auction-container container mt-4 mb-5">
+    <div class="row">
+      <!-- Cột trái: Thông tin người dùng -->
+      <div class="col-md-3">
+        <div class="card shadow-lg mb-4">
+          <div class="card-body">
+            <h5 class="card-title">Tài khoản của bạn</h5>
+            <p class="card-text"><strong>Tên đăng nhập:</strong> {{ user.username }}</p>
+            <p class="card-text"><strong>Số dư:</strong> {{ user.balance }} VNĐ</p>
           </div>
         </div>
-  
-        <div class="col-md-4">
-          <div class="card shadow-lg mb-4">
-            <div class="card-body">
-              <h5 class="card-title">Tài khoản của bạn</h5>
-              <p class="card-text"><strong>Tên đăng nhập:</strong> {{ user.username }}</p>
-              <p class="card-text"><strong>Số dư:</strong> {{ user.balance }} VNĐ</p>
-            </div>
+      </div>
+
+      <!-- Cột giữa: Thông tin đấu giá -->
+      <div class="col-md-6" v-if="auction">
+        <div class="card shadow-lg text-center">
+          <h5 class="card-title mt-4">{{ auction.auctionName }}</h5>
+          <div class="image-container">
+            <img :src="getImageUrl(auction.image)" class="auction-image img-fluid rounded" alt="Hình ảnh đấu giá">
           </div>
-  
-          <div class="card shadow-lg">
-            <div class="card-body">
-              <h5 class="card-title">Đặt giá của bạn</h5>
-              <form @submit.prevent="placeBid">
-                <div class="mb-3">
-                  <label for="bidAmount" class="form-label">Số tiền đặt giá (VNĐ)</label>
-                  <input type="number" v-model="bidAmount" id="bidAmount" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-primary w-100">Đặt giá</button>
-              </form>
-            </div>
+          <div class="card-body">        
+            <p class="card-text">{{ auction.prize }}</p>
+             <div class="current-price-box">
+            <p class="card-text">
+              <strong>Giá hiện tại:</strong> {{ auction.currentPrice }} VNĐ
+            </p>
+          </div>
+            <p class="card-text"><strong>Thời gian đấu giá:</strong> {{ auction.timeAuction }}</p>
+          </div>
+        </div>
+
+        <!-- Phần đặt giá, cách 20px so với thông tin đấu giá -->
+        <div class="card shadow-lg mt-4" style="margin-top: 20px;">
+          <div class="card-body">
+            <h5 class="card-title">Đặt giá của bạn</h5>
+            <form @submit.prevent="placeBid">
+              <div class="mb-3">
+                <label for="bidAmount" class="form-label">Số tiền đặt giá (VNĐ)</label>
+                <input type="number" v-model="bidAmount" id="bidAmount" class="form-control" required>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Đặt giá</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cột phải: Thông tin người tham gia -->
+      <div class="col-md-3">
+        <div class="card shadow-lg mb-4">
+          <div class="card-body">
+            <h5 class="card-title">Người tham gia</h5>
+            <ul class="list-group">
+              <li class="list-group-item" v-for="participant in participants" :key="participant.id">
+                {{ participant.name }}
+              </li>
+            </ul>
           </div>
         </div>
       </div>
     </div>
-  </template>
-  
-  
-  
+  </div>
+</template>
+
   <script lang="ts">
 import { defineComponent, ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
@@ -64,7 +79,11 @@ export default defineComponent({
     });
 
     const auctionId = ref(Number(route.params.id));
-
+    const participants = ref([
+      { id: 1, name: 'Nguyễn Văn A' },
+      { id: 2, name: 'Trần Thị B' },
+      // Thêm người tham gia nếu cần
+    ]);
     const formatDate = (dateString: string) => {
       const date = new Date(dateString);
       return date.toLocaleString('vi-VN', {
@@ -143,6 +162,7 @@ const getImageUrl = (imagePath: string) => {
       formatDate,
       placeBid,
       getImageUrl,
+      participants,
     };
   },
 });
@@ -152,32 +172,17 @@ const getImageUrl = (imagePath: string) => {
   padding: 20px;
 }
 
-.custom-col {
-  width: 848px;
-  max-width: 100%;
-  height: 518px;
+.auction-image {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  object-fit: cover;
   margin: 0 auto;
 }
 
-.auction-card {
-  height: 100%;
-}
-
 .image-container {
-  height: 60%;
-  overflow: hidden;
-}
-
-.auction-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.card-body {
-  height: 40%;
-  overflow: auto;
-  padding: 10px;
+  text-align: center;
+  padding: 20px 0;
 }
 
 .card-title {
@@ -188,7 +193,16 @@ const getImageUrl = (imagePath: string) => {
   margin-bottom: 8px;
 }
 
-/* Các CSS khác nếu cần */
+/* Điều chỉnh khoảng cách giữa các card */
+.card + .card {
+  margin-top: 20px;
+}
+
+/* Đảm bảo cột giữa được căn giữa trên màn hình nhỏ */
+@media (max-width: 768px) {
+  .col-md-6 {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
 </style>
-
-
