@@ -139,6 +139,7 @@ namespace DragonAcc.Service.Services
                         Server = model.Server,
                         Earring = model.Earring ?? false,
                         Planet = model.Planet,
+                        Content = model.Content,
                         Price = model.Price,
                         Created = DateTime.UtcNow,
                         CreatedDate = _now
@@ -226,41 +227,84 @@ namespace DragonAcc.Service.Services
         }
         public async Task<ApiResult> BuyGameAccount(BuyGameAccountModel model)
         {
-            var gameAccount = await _dataContext.GameAccounts.FirstOrDefaultAsync(x => x.Id == model.GameAccountId);
+            // Kiểm tra tham số GameAccountId
             if (model.GameAccountId == null)
+            {
+                return new ApiResult { Message = "Game account ID is required." };
+            }
+
+            // Lấy thông tin tài khoản game
+            var gameAccount = await _dataContext.GameAccounts.FirstOrDefaultAsync(x => x.Id == model.GameAccountId);
+            if (gameAccount == null)
             {
                 return new ApiResult { Message = "Game account not found." };
             }
-            if(gameAccount.Status == "Đã bán")
+
+            // Kiểm tra trạng thái tài khoản game
+            if (gameAccount.Status == "Đã bán")
             {
-                return new ApiResult { Message = "Tài khoản này đã bán" };
+                return new ApiResult { Message = "Tài khoản này đã bán." };
             }
+
+            // Lấy thông tin người dùng
             var user = await _dataContext.Users.FirstOrDefaultAsync(x => x.Id == model.UserId);
+            if (user == null)
+            {
+                return new ApiResult { Message = "User not found." };
+            }
+
+            // Chuyển đổi Balance và Price từ string sang decimal
+            if (!decimal.TryParse(user.Balance, out decimal userBalance))
+            {
+                return new ApiResult { Message = "Số dư của người dùng không hợp lệ." };
+            }
+            if (!decimal.TryParse(gameAccount.Price, out decimal accountPrice))
+            {
+                return new ApiResult { Message = "Giá của tài khoản game không hợp lệ." };
+            }
+
+            // Kiểm tra số dư
+            if (userBalance < accountPrice)
+            {
+                return new ApiResult { Message = "Số dư không đủ để mua tài khoản này." };
+            }
+
+            // Bắt đầu giao dịch
             using var tran = await _dataContext.Database.BeginTransactionAsync();
             try
             {
+                // Trừ số tiền từ số dư của người dùng
+                user.Balance = (userBalance - accountPrice).ToString();
+
+                // Tạo bản ghi PurchasedAccount mới
                 var purchasedAccount = new PurchasedAccount
                 {
-                    UserId = _userService.UserId,
+                    UserId = model.UserId,
                     AccountName = gameAccount.AccountName,
                     AccountPassword = gameAccount.AccountPassword,
-                    CreatedDate = _now,
+                    CreatedDate = DateTime.UtcNow, // Hoặc sử dụng _now nếu đã được định nghĩa
                 };
 
                 _dataContext.PurchasedAccounts.Add(purchasedAccount);
+
+                // Cập nhật trạng thái tài khoản game
                 gameAccount.Status = "Đã bán";
+
+                // Lưu các thay đổi vào cơ sở dữ liệu
                 await _dataContext.SaveChangesAsync();
+
+                // Hoàn thành giao dịch
                 await tran.CommitAsync();
 
-                return new ApiResult { Message = "Mua tài khoản thành công" };
+                return new ApiResult { Message = "Mua tài khoản thành công." };
             }
             catch (Exception ex)
             {
+                // Rollback giao dịch nếu có lỗi
                 await tran.RollbackAsync();
-                throw new Exception($"Error during purchase: {ex.Message}");
+                return new ApiResult { Message = $"Error during purchase: {ex.Message}" };
             }
         }
-
 
     }
 }

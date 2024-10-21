@@ -64,10 +64,12 @@
                     :style="{ color: item.status === 'Đã bán' ? 'red' : 'green' }">
                      {{ item.status === 'Đã bán' ? 'Đã bán' : 'Chưa bán' }}
                   </span>
-                </div>
-              </div>                                                                             
+                </div>            
+              </div>                                                                          
             </div>
-
+            <div class="preview-card__description">
+              <p>{{ item.content }}</p>
+            </div> 
             <div class="preview-card__img">
               <div class="image-border-wrapper">
                 <img 
@@ -97,17 +99,22 @@
     </div>
 
 <!-- Image Modal -->
-<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true"  v-for="(item, index) in filteredAccounts" 
+:key="index">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="imageModalLabel">Xem Ảnh Phóng To</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
       </div>
+      <div class="preview-card__description">
+        <p>{{ item.content }}</p>
+      </div> 
       <div class="modal-body position-relative">
         <!-- Left Arrow -->
         <button class="image-nav-arrow left" @click="showPrevImage" :disabled="currentImageIndex === 0">
-          <i class="fas fa-chevron-left"></i>
+          <i class="bi bi-arrow-left-circle"></i>
         </button>
 
         <!-- Image Display -->
@@ -117,7 +124,7 @@
 
         <!-- Right Arrow -->
         <button class="image-nav-arrow right" @click="showNextImage" :disabled="currentImageIndex === imageList.length - 1">
-          <i class="fas fa-chevron-right"></i>
+          <i class="bi bi-arrow-right-circle"></i>
         </button>
       </div>
     </div>
@@ -179,6 +186,7 @@ interface GameAccount {
   status: string;
   earring: string;
   planet: string;
+  content: string;
   server: string;
   createdDate: string;
   id: number;
@@ -317,7 +325,7 @@ const showPrevImage = () => {
         return;
       }
 
-      const userId = store.user?.userId;
+      const userId = store.user?.id;
       if (!userId) {
         alert("Không tìm thấy User ID. Vui lòng đăng nhập.");
         return;
@@ -412,6 +420,38 @@ const showPrevImage = () => {
 
 * {
   box-sizing: border-box;
+}
+.preview-card__description {
+  color: #333;
+  font-size: 14px;
+  margin-top: 10PX;
+  line-height: 1.5;
+  margin-left: 15px;
+}
+
+.preview-card__description p {
+  white-space: pre-wrap; /* Hiển thị nội dung với các xuống dòng */
+  overflow: hidden; /* Ẩn nội dung nếu quá dài */
+  text-overflow: ellipsis; /* Thêm dấu "..." khi nội dung quá dài */
+}
+
+.preview-card__description:hover {
+  overflow: visible; /* Cho phép hiển thị đầy đủ nội dung khi người dùng rê chuột qua */
+  white-space: normal;
+}
+
+.preview-card__button {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 50px;
+  background-color: #7f7f7f;
+  color: #fff;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.preview-card__button:hover {
+  background-color: #454545;
 }
 
 body {

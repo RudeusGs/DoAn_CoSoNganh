@@ -2,10 +2,12 @@ import baseApi from './base.api';
 import Cookies from 'js-cookie';
 export default {
     login: async (model: LoginModel) : Promise<any|undefined> => {
-      const response= await baseApi.postAuthenticate('Authenticate/login', model);
-      if(response.status == 200){
-      return response.data ;
-      }
+      const response = await baseApi.postAuthenticate('Authenticate/login', model);
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      throw new Error('Login failed');
+    }
     },
 
     logout:()=>{

@@ -3,7 +3,8 @@ export interface AddGameAccountModel {
   id: number
   accountName: string;        
   accountPassword: string;    
-  status: boolean;             
+  status: boolean;     
+  content: string;        
   server: string;            
   earring?: boolean;          
   planet: string;              
