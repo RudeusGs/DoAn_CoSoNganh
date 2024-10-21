@@ -70,11 +70,10 @@ export default defineComponent({
           };
 
           const response = await authApi.login(loginModel);
-
           if (response && response.result?.isSuccess) {
             user.login({
-              userId: response.result.data.userId,
-              username: response.result.data.username,
+              id: response.result.data.userId,
+              userName: response.result.data.username,
               email: response.result.data.email,
               fullName: response.result.data.fullName,
               balance: response.result.data.balance,
@@ -94,7 +93,6 @@ export default defineComponent({
         alert("Username and password cannot be empty.");
       }
     };
-
     return {
       userName,
       password,

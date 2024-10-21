@@ -6,6 +6,7 @@ namespace DragonAcc.Service.Models.AccountGame
     {
         public string? Name { get; set; }
         public string? AccountName { get; set; }
+        public string? Content { get; set; }
         public string? AccountPassword { get; set; }
         public List<IFormFile>? Files { get; set; }
         public string? Image { get; set; }

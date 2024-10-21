@@ -39,4 +39,5 @@ export interface AuctionModel {
   timeAuction: string;
   status: string;
   winner?: number;
+  winnerName?: string;
 }

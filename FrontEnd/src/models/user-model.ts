@@ -3,14 +3,15 @@ export interface LoginModel{
     password: string,
   }
   
- export  interface UserInfoModel{
-    username:string,
-    userId:Number,
-    email: string,
-    fullName?: string,
-    balance: string,
-    coin: Number,
+  export interface UserInfoModel {
+    userName: string;
+    id: number;
+    email: string;
+    fullName?: string;
+    balance: string;
+    coin: number;
   }
+  
   
  export  interface LoginResponseModel{
     userId:number,

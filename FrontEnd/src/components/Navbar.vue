@@ -19,7 +19,7 @@
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Payin</a>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="/phonecard">Phone Card</a></li>
-              <li><a class="dropdown-item" href="#">Banking</a></li>
+              <li><a class="dropdown-item" href="/banking">Banking</a></li>
             </ul>
           </li>
           <li class="nav-item dropdown">
@@ -27,8 +27,6 @@
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="/addaccount">Add Account</a></li>
               <li><a class="dropdown-item" href="#">Add Item</a></li>
-              <li><a class="dropdown-item" href="#">Buy Account</a></li>
-              <li><a class="dropdown-item" href="#">Buy Item</a></li>
             </ul>
           </li>
           <li class="nav-item">
