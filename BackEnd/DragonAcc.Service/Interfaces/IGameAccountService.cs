@@ -11,5 +11,7 @@ namespace DragonAcc.Service.Interfaces
         public Task<ApiResult> Update(UpdateGameAccountModel model);
         public Task<ApiResult> GetAll2();
         public Task<ApiResult> BuyGameAccount(BuyGameAccountModel model);
+        public Task<ApiResult> GetAllByUser(int userId);
+        public Task<ApiResult> CommentOrLike(CommentandLikeModel model);
     }
 }

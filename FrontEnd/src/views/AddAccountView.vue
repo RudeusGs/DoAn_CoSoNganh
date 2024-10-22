@@ -61,7 +61,7 @@
 
     <!-- Submit button -->
     <div class="d-grid mb-2">
-      <button type="submit" class="btn btn-primary btn-block">Post</button>
+      <button type="submit" class="btn btn-primary btn-block" @click="submitForm">Post</button>
     </div>
 
     <!-- Error and Success messages -->

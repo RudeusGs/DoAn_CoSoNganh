@@ -89,9 +89,22 @@
               <div class="preview-card__text">Server: {{ item.server }}</div>
               <div class="d-flex justify-content-between">
                 <a href="#" class="preview-card__button">Like</a>
-                <a href="#" class="preview-card__button">Comment</a>
+                <a class="preview-card__button" @click="toggleComments(index)">Comment</a>
                 <a href="#" class="preview-card__button" data-bs-toggle="modal" data-bs-target="#confirmationModal" @click="selectedAccount = item">Buy</a>
               </div>
+                <div v-show="showComments[index]" class="comment-section mt-3 bg-white p-3 rounded shadow-sm">
+                  <textarea class="form-control mb-2" rows="3" placeholder="Write a comment..."></textarea>
+                  <button class="btn btn-primary mb-3">Submit</button>
+                  <div class="comments">
+                    <div v-for="(comment, idx) in item.comments" :key="idx" class="comment mb-2 p-2 rounded" style="background-color: #f0f2f5;">
+                      <div class="d-flex align-items-center mb-1">
+                        <img :src="comment.userAvatar" alt="User Avatar" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;">
+                        <strong>{{ comment.user }}</strong>
+                      </div>
+                      <div>{{ comment.text }}</div>
+                    </div>
+                  </div>
+                </div>
             </div>
           </div>
         </div>
@@ -108,9 +121,6 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 
       </div>
-      <div class="preview-card__description">
-        <p>{{ item.content }}</p>
-      </div> 
       <div class="modal-body position-relative">
         <!-- Left Arrow -->
         <button class="image-nav-arrow left" @click="showPrevImage" :disabled="currentImageIndex === 0">
@@ -216,9 +226,16 @@ export default defineComponent({
     const imageList = ref<string[]>([]);
     const currentImageIndex = ref<number>(0);
     const router = useRouter();
+    const showComments = ref<boolean[]>([]); 
+    const toggleComments = (index: number) => {
+      if (showComments.value[index] === undefined) {
+        showComments.value[index] = false;
+      }
+      showComments.value[index] = !showComments.value[index];
+    };
 
     let timer: ReturnType<typeof setInterval>;
-        const getFullImageUrlFromPath = (imagePath: string) => {
+    const getFullImageUrlFromPath = (imagePath: string) => {
     if (!imagePath) {
       return 'https://via.placeholder.com/336x198';
     }
@@ -410,6 +427,8 @@ const showPrevImage = () => {
       filterStatus,
       imageList,
       currentImageIndex,
+      showComments,
+      toggleComments,
     };
   },
 });
@@ -421,6 +440,42 @@ const showPrevImage = () => {
 * {
   box-sizing: border-box;
 }
+.comment-section {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.form-control {
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.btn-primary {
+  border-radius: 20px;
+  padding: 5px 20px;
+}
+
+.comments .comment {
+  background-color: #f0f2f5;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.comments .comment img {
+  border-radius: 50%;
+}
+
+.comment strong {
+  font-size: 14px;
+  color: #333;
+}
+
+.comment div {
+  font-size: 14px;
+  color: #555;
+}
+
 .preview-card__description {
   color: #333;
   font-size: 14px;
@@ -430,13 +485,13 @@ const showPrevImage = () => {
 }
 
 .preview-card__description p {
-  white-space: pre-wrap; /* Hiển thị nội dung với các xuống dòng */
-  overflow: hidden; /* Ẩn nội dung nếu quá dài */
-  text-overflow: ellipsis; /* Thêm dấu "..." khi nội dung quá dài */
+  white-space: pre-wrap;
+  overflow: hidden; 
+  text-overflow: ellipsis;
 }
 
 .preview-card__description:hover {
-  overflow: visible; /* Cho phép hiển thị đầy đủ nội dung khi người dùng rê chuột qua */
+  overflow: visible;
   white-space: normal;
 }
 

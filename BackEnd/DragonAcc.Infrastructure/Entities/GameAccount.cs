@@ -14,6 +14,8 @@ namespace DragonAcc.Infrastructure.Entities
         public bool? Earring { get; set; }
         public string? Planet { get; set; }
         public int? Server { get; set; }
+        public string? Comment { get; set; }
+        public int? Like { get; set; }
         public DateTime? Created { get; set; }
     }
 }

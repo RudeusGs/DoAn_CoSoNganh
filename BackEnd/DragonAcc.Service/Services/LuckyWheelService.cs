@@ -19,16 +19,16 @@ namespace DragonAcc.Service.Services
             _ftpDirectoryService = ftpDirectoryService;
         }
 
-        private async Task<List<string>> UploadFiles(int? accountId, List<IFormFile>? files)
+        private async Task<List<string>> UploadFiles(int? luckywheelid, List<IFormFile>? files)
         {
             var uploadedFilePaths = new List<string>();
 
-            if (files == null || !accountId.HasValue)
+            if (files == null || !luckywheelid.HasValue)
             {
                 return uploadedFilePaths;
             }
 
-            var accountFolder = $"public/GameAccounts/{accountId}";
+            var luckywheelFolder = $"public/LuckyWheels/{luckywheelid}";
 
             foreach (var file in files)
             {
@@ -36,13 +36,13 @@ namespace DragonAcc.Service.Services
                 var stream = file.OpenReadStream();
 
 
-                var fileName = $"{accountId}.{uploadedFilePaths.Count + 1}{fileExt}";
+                var fileName = $"{luckywheelid}.{uploadedFilePaths.Count + 1}{fileExt}";
 
-                var result = await _ftpDirectoryService.TransferToFtpDirectoryAsync(stream, accountFolder, fileName);
+                var result = await _ftpDirectoryService.TransferToFtpDirectoryAsync(stream, luckywheelFolder, fileName);
 
                 if (result.Succeed)
                 {
-                    uploadedFilePaths.Add($"{accountFolder}/{fileName}");
+                    uploadedFilePaths.Add($"{luckywheelFolder}/{fileName}");
                 }
             }
 
@@ -68,15 +68,15 @@ namespace DragonAcc.Service.Services
                     _dataContext.LuckyWheels.Add(newLuckyWheel);
                     await _dataContext.SaveChangesAsync();
 
-                    if (model.Files != null && model.Files.Count > 0)
+                    if (model.Files != null && model.Files.Any())
                     {
                         var fileUploads = await UploadFiles(newLuckyWheel.Id, model.Files);
-                        if (fileUploads.Count > 0)
+                        if (fileUploads.Any())
                         {
-                            newLuckyWheel.Image = string.Join(",", fileUploads);
+                            newLuckyWheel.Image = string.Join(";", fileUploads);
                         }
                     }
-
+                    await _dataContext.SaveChangesAsync();
                     await tran.CommitAsync();
                     return new(newLuckyWheel);
                 }
@@ -170,31 +170,26 @@ namespace DragonAcc.Service.Services
             {
                 return new() { Message = "Không có sản phẩm nào trong vòng quay!" };
             }
-
-            // Tính tổng xác suất của tất cả các sản phẩm (lưu ý mỗi sản phẩm có tỷ lệ phần trăm riêng)
             float totalProbability = luckyWheels.Sum(lw => lw.Probability ?? 0);
 
             if (totalProbability <= 0)
             {
                 return new() { Message = "Tổng xác suất không hợp lệ!" };
             }
-
-            // Chọn một số ngẫu nhiên từ 0 đến tổng xác suất
             Random rand = new Random();
             float randomNumber = (float)(rand.NextDouble() * totalProbability);
 
-            // Duyệt qua các sản phẩm và chọn sản phẩm dựa trên khoảng xác suất của nó
             float cumulativeProbability = 0f;
             foreach (var luckyWheel in luckyWheels)
             {
                 cumulativeProbability += luckyWheel.Probability ?? 0;
                 if (randomNumber <= cumulativeProbability)
                 {
-                    return new(luckyWheel); // Sản phẩm được chọn dựa trên xác suất
+                    return new(luckyWheel);
                 }
             }
 
-            return new() { Message = "Không chọn được sản phẩm nào!" }; // Trường hợp không chọn được sản phẩm (dự phòng)
+            return new() { Message = "Không chọn được sản phẩm nào!" };
         }
 
         public Task<ApiResult> Add(LuckyWheel model)

@@ -9,6 +9,8 @@
             <th scope="col">Username</th>
             <th scope="col">Password</th>
             <th scope="col">Ngày mua</th>
+            <th scope="col">Số tiền</th>
+            <th scope="col">Báo cáo</th>
           </tr>
         </thead>
         <tbody>
@@ -17,6 +19,7 @@
             <td>{{ account.username }}</td>
             <td>{{ account.password }}</td>
             <td>{{ formatDate(account.purchaseDate) }}</td>
+            <td>{{account.price}}</td>
           </tr>
         </tbody>
       </table>
@@ -33,6 +36,7 @@ interface Account {
   username: string;
   password: string;
   purchaseDate: string;
+  price: string;
 }
 
 export default defineComponent({
@@ -40,19 +44,34 @@ export default defineComponent({
     const purchasedAccounts = ref<Account[]>([]);
 
     const fetchPurchasedAccounts = async () => {
-      try {
-        const response = await purchasedaccountApi.getAllPurchasedAccount();
-        if (response && response.data.result.isSuccess) {
-          purchasedAccounts.value = response.data.result.data.map((account: any) => ({
-            username: account.accountName,
-            password: account.accountPassword,
-            purchaseDate: account.createdDate,
-          }));
-        }
-      } catch (error) {
-        console.error("Lỗi khi lấy tài khoản đã mua:", error);
+  try {
+    const user = localStorage.getItem('user');
+    if (user) {
+      const userId = JSON.parse(user).id;
+      console.log("UserId:", userId);
+      const response = await purchasedaccountApi.getPurchasedAccountsByUser(userId);
+      
+      console.log("Full API Response:", response);
+
+      if (response && response.data && response.data.isSuccess) {
+        purchasedAccounts.value = response.data.data.map((account: any) => ({
+          username: account.accountName,
+          password: account.accountPassword,
+          purchaseDate: account.createdDate,
+          price : account.price
+        }));
+        console.log("Purchased accounts:", purchasedAccounts.value);
+      } else {
+        console.error('Failed to fetch purchased accounts:', response?.data?.message);
       }
-    };
+    } else {
+      console.error('User not found in localStorage');
+    }
+  } catch (error) {
+    console.error('Error fetching purchased accounts:', error);
+  }
+};
+
 
     const formatDate = (dateString: string) => {
       const date = new Date(dateString);
@@ -69,6 +88,7 @@ export default defineComponent({
     };
   },
 });
+
 </script>
 
 <style scoped>
@@ -80,12 +100,12 @@ export default defineComponent({
 .table {
   border-radius: 15px;
   overflow: hidden;
-  width: 100%; /* Đảm bảo bảng chiếm toàn bộ chiều rộng */
+  width: 100%; 
 }
 
 th, td {
-  padding: 0.5rem; /* Giảm khoảng cách giữa các hàng */
-  font-size: 0.9rem; /* Giảm kích thước font để hàng ngắn hơn */
+  padding: 0.5rem; 
+  font-size: 0.9rem;
   text-align: left;
 }
 
