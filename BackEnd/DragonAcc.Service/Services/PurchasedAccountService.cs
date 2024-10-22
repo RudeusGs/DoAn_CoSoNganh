@@ -41,6 +41,13 @@ namespace DragonAcc.Service.Services
             }
             return new ApiResult { Message = "Purchased account not found." };
         }
+        public async Task<ApiResult> GetAllByUser(int userId)
+        {
+            var result = await _dataContext.PurchasedAccounts
+                .Where(x => x.UserId == userId)
+                .ToListAsync();
+            return new(result);
+        }
 
         public async Task<ApiResult> GetAll()
         {

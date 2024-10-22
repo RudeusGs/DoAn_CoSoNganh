@@ -11,5 +11,6 @@ export interface AddGameAccountModel {
   price: number;               
   files?: File[];              
   posterName: string;           
-  createdDate: string;    
+  createdDate: string;   
+  comments?: { user: string; text: string }[]; 
 }

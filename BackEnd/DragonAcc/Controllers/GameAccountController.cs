@@ -1,5 +1,6 @@
 ﻿using DragonAcc.Service.Interfaces;
 using DragonAcc.Service.Models.AccountGame;
+using DragonAcc.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -87,6 +88,26 @@ namespace DragonAcc.Controllers
             try
             {
                 var result = await _gameAccountService.BuyGameAccount(model);
+                return Response(result);
+            }
+            catch (Exception e)
+            {
+                return Response(e.Message, 500);
+            }
+        }
+        [HttpGet("get-by-user/{userId}")]
+        public async Task<IActionResult> GetAllByUser(int userId)
+        {
+            var result = await _gameAccountService.GetAllByUser(userId);
+            return Ok(result);
+        }
+        [Authorize]
+        [HttpPost("comment-or-like")]
+        public async Task<IActionResult> CommentOrLike([FromBody] CommentandLikeModel model)
+        {
+            try
+            {
+                var result = await _gameAccountService.CommentOrLike(model);
                 return Response(result);
             }
             catch (Exception e)

@@ -23,5 +23,12 @@ namespace DragonAcc.Controllers
             var result = await _purchasedAccountService.GetAll();
             return Response(result);
         }
+        [HttpGet("get-by-user/{userId}")]
+        public async Task<IActionResult> GetAllByUser(int userId)
+        {
+            var result = await _purchasedAccountService.GetAllByUser(userId);
+            return Ok(result);
+        }
+
     }
 }
