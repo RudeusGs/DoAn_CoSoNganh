@@ -47,6 +47,7 @@ namespace DragonAcc.Service
             services.AddScoped<IDailyCheckInService, DailyCheckInService>();
             services.AddScoped<IPurchasedAccountService, PurchasedAccountService>();
             services.AddScoped<IAccountWebsiteService, AccountWebsiteService>();
+            services.AddScoped<ICommentOrLikeService, CommentOrLikeService>();
             #endregion
             return services;
         }

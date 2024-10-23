@@ -45,8 +45,8 @@
       </div>
 
       <!-- User Posts Section -->
-      <div class="row d-flex justify-content-center mb-4">
-        <h4 class="col-md-8">Tài khoản đã đăng</h4>
+      <div class="row d-flex justify-content-center text-center mb-5">
+        <h2 class="fw-bolder col-md-8">Tài khoản đã đăng</h2>
       </div>
 
       <!-- Posts List -->
