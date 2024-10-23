@@ -1,5 +1,6 @@
 ﻿using DragonAcc.Service.Interfaces;
 using DragonAcc.Service.Models.AccountGame;
+using DragonAcc.Service.Models.CommentOrLike;
 using DragonAcc.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,17 +9,17 @@ namespace DragonAcc.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GameAccountController : BaseController
+    public class CommentOrLikeController : BaseController
     {
-        private readonly IGameAccountService _gameAccountService;
-        public GameAccountController(IGameAccountService gameAccountService)
+        private readonly ICommentOrLikeService _commentOrLikeService;
+        public CommentOrLikeController(ICommentOrLikeService commentOrLikeService)
         {
-            _gameAccountService = gameAccountService;   
+            _commentOrLikeService = commentOrLikeService;
         }
         [HttpGet("get-all")]
         public async Task<IActionResult> GetAll()
         {
-            var result = await _gameAccountService.GetAll2();
+            var result = await _commentOrLikeService.GetAll();
             return Response(result);
         }
 
@@ -27,7 +28,7 @@ namespace DragonAcc.Controllers
         {
             try
             {
-                var result = await _gameAccountService.GetById(id);
+                var result = await _commentOrLikeService.GetById(id);
                 return Response(result);
             }
             catch (Exception e)
@@ -35,14 +36,13 @@ namespace DragonAcc.Controllers
                 return Response(e.Message, 500);
             }
         }
-
         [Authorize]
         [HttpPost("add")]
-        public async Task<IActionResult> Add([FromForm] AddGameAccountModel model)
+        public async Task<IActionResult> Add([FromForm] AddCommentOrLikeModel model)
         {
             try
             {
-                var result = await _gameAccountService.Add(model);
+                var result = await _commentOrLikeService.AddCommentOrLike(model);
                 return Response(result);
             }
             catch (Exception e)
@@ -54,11 +54,11 @@ namespace DragonAcc.Controllers
 
         [Authorize]
         [HttpPut("update")]
-        public async Task<IActionResult> Update([FromForm] UpdateGameAccountModel model)
+        public async Task<IActionResult> Update([FromForm] UpdateCommentOrLikeModel model)
         {
             try
             {
-                var result = await _gameAccountService.Update(model);
+                var result = await _commentOrLikeService.UpdateCommentOrLike(model);
                 return Response(result);
             }
             catch (Exception e)
@@ -73,7 +73,7 @@ namespace DragonAcc.Controllers
         {
             try
             {
-                var result = await _gameAccountService.Delete(id);
+                var result = await _commentOrLikeService.Delete(id);
                 return Response(result);
             }
             catch (Exception e)
@@ -81,26 +81,5 @@ namespace DragonAcc.Controllers
                 return Response(e.Message, 500);
             }
         }
-        [Authorize]
-        [HttpPost("Purchase")]
-        public async Task<IActionResult> BuyGameAccount([FromBody] BuyGameAccountModel model)
-        {
-            try
-            {
-                var result = await _gameAccountService.BuyGameAccount(model);
-                return Response(result);
-            }
-            catch (Exception e)
-            {
-                return Response(e.Message, 500);
-            }
-        }
-        [HttpGet("get-by-user/{userId}")]
-        public async Task<IActionResult> GetAllByUser(int userId)
-        {
-            var result = await _gameAccountService.GetAllByUser(userId);
-            return Ok(result);
-        }
-        
     }
 }

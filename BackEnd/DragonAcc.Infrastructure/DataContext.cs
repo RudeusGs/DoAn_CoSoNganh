@@ -28,5 +28,7 @@ namespace DragonAcc.Infrastructure
         public virtual DbSet<PurchasedAccount> PurchasedAccounts { get; set; }
         public virtual DbSet<WithDrawMoney> WithDrawMoneys { get; set; }
         public virtual DbSet<ReportDetail> ReportDetails { get; set; }
+        public virtual DbSet<CommentOrLike> CommentOrLikes { get; set; }
+
     }
 }
